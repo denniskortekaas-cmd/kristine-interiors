@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.instagram.com)",
+      "Bash(open \"/Users/denniskortekaas/Desktop/Claude Code Projects/Interior design landing and leads page:form/index.html\")",
+      "WebFetch(domain:mkbliving.ae)",
+      "Bash(sort -k6,7)",
+      "Bash(railway whoami:*)",
+      "Bash(git --version)",
+      "Bash(gh auth:*)"
+    ]
+  }
+}
