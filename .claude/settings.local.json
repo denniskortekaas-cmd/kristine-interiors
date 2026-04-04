@@ -7,7 +7,8 @@
       "Bash(sort -k6,7)",
       "Bash(railway whoami:*)",
       "Bash(git --version)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Read(//Users/denniskortekaas/Desktop/Claude Code Projects/**)"
     ]
   }
 }
