@@ -176,9 +176,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
 
 .logo-name {
-  font-family: var(--font-serif);
-  font-size: 18px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
   font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--white);
   transition: color var(--transition);
 }
@@ -739,9 +741,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .footer-logo {
   display: block;
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
   font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--white);
   line-height: 1.2;
 }
