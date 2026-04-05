@@ -203,7 +203,30 @@
 
 
   // ──────────────────────────────────────────────
-  // 7. PORTFOLIO LIGHTBOX
+  // 7. WHATSAPP BUTTON — show after scrolling past hero
+  // ──────────────────────────────────────────────
+  const whatsappBtn = document.getElementById('whatsapp-btn');
+  const heroSection = document.getElementById('hero');
+
+  if (whatsappBtn && heroSection) {
+    const waObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            whatsappBtn.classList.remove('visible');
+          } else {
+            whatsappBtn.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0 }
+    );
+    waObserver.observe(heroSection);
+  }
+
+
+  // ──────────────────────────────────────────────
+  // 8. PORTFOLIO LIGHTBOX
   // ──────────────────────────────────────────────
   const lightbox     = document.getElementById('lightbox');
   const lightboxImg  = document.getElementById('lightbox-img');

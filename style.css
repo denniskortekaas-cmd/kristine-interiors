@@ -177,9 +177,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .logo-name {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--white);
   transition: color var(--transition);
@@ -187,8 +187,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .logo-tagline {
   font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.7);
   transition: color var(--transition);
@@ -522,15 +522,30 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 12px;
 }
 
+.service-card-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+
 .service-link {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--gold);
   transition: color var(--transition), letter-spacing var(--transition);
-  margin-top: 6px;
+  white-space: nowrap;
 }
 .service-link:hover { color: var(--gold-dark); letter-spacing: 0.12em; }
+
+.service-price {
+  font-size: 12px;
+  color: var(--brown-light);
+  text-align: right;
+  line-height: 1.4;
+}
 
 
 /* ============================================================
@@ -742,9 +757,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .footer-logo {
   display: block;
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--white);
   line-height: 1.2;
@@ -752,8 +767,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .footer-logo-sub {
   display: block;
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 16px;
@@ -799,7 +814,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-  transition: transform var(--transition), box-shadow var(--transition);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform var(--transition), box-shadow var(--transition);
+}
+
+.whatsapp-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .whatsapp-btn:hover {
