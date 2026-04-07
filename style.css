@@ -871,17 +871,18 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .mobile-book-btn {
     display: block;
     background: var(--gold);
-    border-radius: 100px;
+    border: 2px solid var(--gold);
+    border-radius: var(--radius);
     text-align: center;
-    padding: 13px 32px;
+    padding: 15px 36px;
     font-family: var(--font-sans);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--white);
     white-space: nowrap;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 24px rgba(169,136,74,0.35);
   }
 
   .whatsapp-btn {
