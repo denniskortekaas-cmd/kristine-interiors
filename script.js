@@ -227,31 +227,103 @@
   // ──────────────────────────────────────────────
   // 8. PORTFOLIO LIGHTBOX
   // ──────────────────────────────────────────────
-  const lightbox     = document.getElementById('lightbox');
-  const lightboxImg  = document.getElementById('lightbox-img');
-  const lightboxCap  = document.getElementById('lightbox-caption');
-  const lightboxClose = document.getElementById('lightbox-close');
+  var projects = [
+    {
+      name: 'Park Horizon · 3 Bedroom, Dubai Hills Estate',
+      images: [
+        'images/park-horizon-cover.JPG',
+        'images/park-horizon-2.JPG',
+        'images/park-horizon-3.JPG',
+        'images/park-horizon-4.JPG',
+        'images/park-horizon-5.jpeg',
+        'images/park-horizon-6.jpeg',
+        'images/park-horizon-7.JPG'
+      ]
+    },
+    {
+      name: 'Sobha Hartland, Crest A · 1 Bedroom',
+      images: [
+        'images/sobha-hartland-cover.jpeg',
+        'images/sobha-hartland-2.jpeg',
+        'images/sobha-hartland-3.jpeg',
+        'images/sobha-hartland-4.jpeg',
+        'images/sobha-hartland-5.jpeg',
+        'images/sobha-hartland-6.jpeg'
+      ]
+    },
+    {
+      name: 'Park Horizon · 2 Bedroom, Dubai Hills Estate',
+      images: [
+        'images/park-horizon-2bed-cover.jpeg',
+        'images/park-horizon-2bed-2.jpeg',
+        'images/park-horizon-2bed-3.jpeg',
+        'images/park-horizon-2bed-4.jpeg',
+        'images/park-horizon-2bed-5.jpeg',
+        'images/park-horizon-2bed-6.jpeg'
+      ]
+    },
+    {
+      name: 'Residence 29, District One · 1 Bedroom',
+      images: [
+        'images/district-one-cover.jpeg',
+        'images/district-one-2.jpeg',
+        'images/district-one-3.jpeg',
+        'images/district-one-4.jpeg',
+        'images/district-one-5.jpeg',
+        'images/district-one-6.jpeg'
+      ]
+    }
+  ];
 
-  document.querySelectorAll('.portfolio-item').forEach(function (item) {
-    item.addEventListener('click', function () {
-      const img     = item.querySelector('img');
-      const caption = item.getAttribute('data-title') || '';
+  var lightbox      = document.getElementById('lightbox');
+  var lightboxImg   = document.getElementById('lightbox-img');
+  var lightboxCap   = document.getElementById('lightbox-caption');
+  var lightboxCount = document.getElementById('lightbox-counter');
+  var lightboxClose = document.getElementById('lightbox-close');
+  var lightboxPrev  = document.getElementById('lightbox-prev');
+  var lightboxNext  = document.getElementById('lightbox-next');
 
-      lightboxImg.src     = img.src.replace(/w=\d+/, 'w=1400');
-      lightboxImg.alt     = img.alt;
-      lightboxCap.textContent = caption;
+  var currentProject = 0;
+  var currentIndex   = 0;
 
-      lightbox.hidden = false;
-      document.body.style.overflow = 'hidden';
-      lightbox.focus();
-    });
-  });
+  function showImage(projectIdx, imgIdx) {
+    var project = projects[projectIdx];
+    imgIdx = (imgIdx + project.images.length) % project.images.length;
+    currentProject = projectIdx;
+    currentIndex   = imgIdx;
+    lightboxImg.src = project.images[imgIdx];
+    lightboxImg.alt = project.name;
+    lightboxCap.textContent = project.name;
+    lightboxCount.textContent = (imgIdx + 1) + ' / ' + project.images.length;
+  }
+
+  function openLightbox(projectIdx) {
+    showImage(projectIdx, 0);
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
 
   function closeLightbox() {
     lightbox.hidden = true;
     document.body.style.overflow = '';
     lightboxImg.src = '';
   }
+
+  document.querySelectorAll('.project-card').forEach(function (card) {
+    card.addEventListener('click', function () {
+      openLightbox(parseInt(card.getAttribute('data-project'), 10));
+    });
+  });
+
+  lightboxPrev.addEventListener('click', function (e) {
+    e.stopPropagation();
+    showImage(currentProject, currentIndex - 1);
+  });
+
+  lightboxNext.addEventListener('click', function (e) {
+    e.stopPropagation();
+    showImage(currentProject, currentIndex + 1);
+  });
 
   lightboxClose.addEventListener('click', closeLightbox);
 
@@ -260,7 +332,10 @@
   });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   showImage(currentProject, currentIndex - 1);
+    if (e.key === 'ArrowRight')  showImage(currentProject, currentIndex + 1);
   });
 
 })();

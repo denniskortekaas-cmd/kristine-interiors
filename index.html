@@ -126,93 +126,39 @@
       </div>
       <div class="portfolio-grid">
 
-        <div class="portfolio-item portfolio-tall fade-in" data-title="District One - Living Room">
-          <img
-            src="images/IMG_3479.JPG"
-            alt="Living Room, District One Dubai"
-            onerror="this.src='https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=800&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">District One</span>
-            <span class="portfolio-type">Turnkey Design · Living Room</span>
+        <div class="project-card fade-in" data-project="0">
+          <img src="images/park-horizon-cover.JPG" alt="Park Horizon, 3 Bedroom, Dubai Hills Estate" loading="lazy" />
+          <div class="project-overlay">
+            <span class="project-name">Park Horizon</span>
+            <span class="project-sub">3 Bedroom · Dubai Hills Estate</span>
+            <span class="project-view">View Project</span>
           </div>
         </div>
 
-        <div class="portfolio-item fade-in" data-title="Sobha Hartland - Bedroom">
-          <img
-            src="images/IMG_3456.JPG"
-            alt="Bedroom, Sobha Hartland Dubai"
-            onerror="this.src='https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">Sobha Hartland</span>
-            <span class="portfolio-type">Turnkey Design · Bedroom</span>
+        <div class="project-card fade-in" data-project="1">
+          <img src="images/sobha-hartland-cover.jpeg" alt="Sobha Hartland, Crest A, 1 Bedroom" loading="lazy" />
+          <div class="project-overlay">
+            <span class="project-name">Sobha Hartland, Crest A</span>
+            <span class="project-sub">1 Bedroom</span>
+            <span class="project-view">View Project</span>
           </div>
         </div>
 
-        <div class="portfolio-item fade-in" data-title="Business Bay - Bedroom Suite">
-          <img
-            src="images/IMG_3444.JPG"
-            alt="Bedroom, Business Bay Dubai"
-            onerror="this.src='https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">Business Bay</span>
-            <span class="portfolio-type">Interior Styling · Bedroom</span>
+        <div class="project-card fade-in" data-project="2">
+          <img src="images/park-horizon-2bed-cover.jpeg" alt="Park Horizon, 2 Bedroom, Dubai Hills Estate" loading="lazy" />
+          <div class="project-overlay">
+            <span class="project-name">Park Horizon</span>
+            <span class="project-sub">2 Bedroom · Dubai Hills Estate</span>
+            <span class="project-view">View Project</span>
           </div>
         </div>
 
-        <div class="portfolio-item portfolio-wide fade-in" data-title="JVC Apartment - Open Plan">
-          <img
-            src="images/IMG_9094.JPG"
-            alt="Living Room, JVC Dubai"
-            onerror="this.src='https://images.unsplash.com/photo-1600210492486-724fe5c67fb3?w=1200&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">JVC Apartment</span>
-            <span class="portfolio-type">Turnkey Design · Open Plan</span>
-          </div>
-        </div>
-
-        <div class="portfolio-item fade-in" data-title="Downtown Dubai - Dining">
-          <img
-            src="images/IMG_3483.JPG"
-            alt="Dining Room, Downtown Dubai"
-            onerror="this.src='https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">Downtown Dubai</span>
-            <span class="portfolio-type">Interior Styling · Dining</span>
-          </div>
-        </div>
-
-        <div class="portfolio-item fade-in" data-title="Dubai Marina - Detail">
-          <img
-            src="images/IMG_9727.JPG"
-            alt="Detail, Dubai Marina"
-            onerror="this.src='https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80'"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">Dubai Marina</span>
-            <span class="portfolio-type">Interior Styling · Detail</span>
-          </div>
-        </div>
-
-        <div class="portfolio-item fade-in" data-title="Palm Jumeirah - Entryway">
-          <img
-            src="images/IMG_3466.JPG"
-            alt="Entryway styling, Palm Jumeirah Dubai"
-            loading="lazy"
-          />
-          <div class="portfolio-overlay">
-            <span class="portfolio-label">Palm Jumeirah</span>
-            <span class="portfolio-type">Interior Styling · Entryway</span>
+        <div class="project-card fade-in" data-project="3">
+          <img src="images/district-one-cover.jpeg" alt="Residence 29, District One, 1 Bedroom" loading="lazy" />
+          <div class="project-overlay">
+            <span class="project-name">Residence 29, District One</span>
+            <span class="project-sub">1 Bedroom</span>
+            <span class="project-view">View Project</span>
           </div>
         </div>
 
@@ -464,8 +410,15 @@
   <!-- ========== LIGHTBOX ========== -->
   <div id="lightbox" class="lightbox" hidden>
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
-    <img id="lightbox-img" src="" alt="" />
-    <p id="lightbox-caption" class="lightbox-caption"></p>
+    <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&#8592;</button>
+    <button class="lightbox-next" id="lightbox-next" aria-label="Next">&#8594;</button>
+    <div class="lightbox-inner">
+      <img id="lightbox-img" src="" alt="" />
+      <div class="lightbox-footer">
+        <p id="lightbox-caption" class="lightbox-caption"></p>
+        <p id="lightbox-counter" class="lightbox-counter"></p>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
