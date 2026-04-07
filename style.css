@@ -650,7 +650,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   grid-template-columns: 1fr 1.2fr;
   grid-template-rows: auto auto;
   column-gap: 80px;
-  row-gap: 40px;
+  row-gap: 20px;
   align-items: start;
 }
 
