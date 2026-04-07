@@ -648,9 +648,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 80px;
+  grid-template-rows: auto auto;
+  column-gap: 80px;
+  row-gap: 40px;
   align-items: start;
 }
+
+.contact-info    { grid-column: 1; grid-row: 1; }
+.contact-form-wrap { grid-column: 2; grid-row: 1 / 3; }
+.contact-details { grid-column: 1; grid-row: 2; }
 
 .contact-info .section-title { margin-bottom: 20px; }
 
@@ -658,7 +664,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 40px;
 }
 
 .contact-details { display: flex; flex-direction: column; gap: 18px; }
@@ -939,7 +944,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    RESPONSIVE — 1024px
    ============================================================ */
 @media (max-width: 1024px) {
-  .contact-grid { grid-template-columns: 1fr; gap: 56px; }
+  .contact-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 40px;
+  }
+  .contact-info, .contact-form-wrap, .contact-details {
+    grid-column: 1;
+    grid-row: auto;
+  }
   .about-grid   { grid-template-columns: 1fr; gap: 48px; }
   .about-img-wrap img { height: 400px; }
   .footer-grid  { grid-template-columns: 1fr 1fr; gap: 40px; }
