@@ -301,6 +301,11 @@
     showImage(projectIdx, 0);
     lightbox.hidden = false;
     document.body.style.overflow = 'hidden';
+    // Preload all images for this project
+    projects[projectIdx].images.forEach(function (src) {
+      var img = new Image();
+      img.src = src;
+    });
   }
 
   function closeLightbox() {
