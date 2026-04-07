@@ -849,34 +849,39 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 @media (max-width: 768px) {
   .mobile-book-bar {
-    display: block;
+    display: flex;
+    justify-content: center;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    width: auto;
     z-index: 95;
-    background: var(--gold);
     opacity: 0;
-    transform: translateY(100%);
     pointer-events: none;
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
   .mobile-book-bar.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
     pointer-events: auto;
   }
 
   .mobile-book-btn {
     display: block;
-    width: 100%;
+    background: var(--gold);
+    border-radius: 100px;
     text-align: center;
-    padding: 11px 24px;
+    padding: 13px 32px;
     font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--white);
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
   }
 
   .whatsapp-btn {
