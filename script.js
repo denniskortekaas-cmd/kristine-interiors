@@ -205,18 +205,18 @@
   // ──────────────────────────────────────────────
   // 7. WHATSAPP BUTTON — show after scrolling past hero
   // ──────────────────────────────────────────────
-  const whatsappBtn        = document.getElementById('whatsapp-btn');
-  const mobileBar          = document.getElementById('mobile-book-bar');
-  const heroSection        = document.getElementById('hero');
-  const testimonialSection = document.getElementById('testimonial');
+  const whatsappBtn     = document.getElementById('whatsapp-btn');
+  const mobileBar       = document.getElementById('mobile-book-bar');
+  const heroSection     = document.getElementById('hero');
+  const processSection  = document.getElementById('process');
 
   if (heroSection) {
     const heroThreshold = heroSection.offsetTop + heroSection.offsetHeight;
     function updateFloatingVisibility() {
-      const pastHero       = window.scrollY >= heroThreshold;
-      const atTestimonial  = testimonialSection && window.scrollY >= testimonialSection.offsetTop;
+      const pastHero    = window.scrollY >= heroThreshold;
+      const atProcess   = processSection && processSection.getBoundingClientRect().top <= window.innerHeight * 0.6;
       if (whatsappBtn) whatsappBtn.classList.toggle('visible', pastHero);
-      if (mobileBar)   mobileBar.classList.toggle('visible', pastHero && !atTestimonial);
+      if (mobileBar)   mobileBar.classList.toggle('visible', pastHero && !atProcess);
     }
     window.addEventListener('scroll', updateFloatingVisibility, { passive: true });
     updateFloatingVisibility();
