@@ -1009,7 +1009,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    RESPONSIVE — 480px
    ============================================================ */
 @media (max-width: 480px) {
-  :root { --section-pad: 56px; --nav-height: 64px; }
+  :root { --section-pad: 40px; --nav-height: 64px; }
   .hero-actions { flex-direction: column; align-items: center; }
   .btn { padding: 14px 28px; }
   .portfolio-grid { grid-template-columns: 1fr; grid-auto-rows: 240px; }
