@@ -338,4 +338,17 @@
     if (e.key === 'ArrowRight')  showImage(currentProject, currentIndex + 1);
   });
 
+  // Touch swipe support
+  var touchStartX = 0;
+  lightbox.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  lightbox.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) showImage(currentProject, currentIndex + 1);
+    else         showImage(currentProject, currentIndex - 1);
+  }, { passive: true });
+
 })();
