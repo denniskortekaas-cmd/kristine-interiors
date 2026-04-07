@@ -210,17 +210,14 @@
   const heroSection = document.getElementById('hero');
 
   if (heroSection) {
-    const waObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          const visible = !entry.isIntersecting;
-          if (whatsappBtn) whatsappBtn.classList.toggle('visible', visible);
-          if (mobileBar)   mobileBar.classList.toggle('visible', visible);
-        });
-      },
-      { threshold: 0 }
-    );
-    waObserver.observe(heroSection);
+    function updateFloatingVisibility() {
+      const heroBottom = heroSection.getBoundingClientRect().bottom;
+      const pastHero = heroBottom <= 0;
+      if (whatsappBtn) whatsappBtn.classList.toggle('visible', pastHero);
+      if (mobileBar)   mobileBar.classList.toggle('visible', pastHero);
+    }
+    window.addEventListener('scroll', updateFloatingVisibility, { passive: true });
+    updateFloatingVisibility();
   }
 
 
