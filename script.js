@@ -210,9 +210,9 @@
   const heroSection = document.getElementById('hero');
 
   if (heroSection) {
+    const heroThreshold = heroSection.offsetTop + heroSection.offsetHeight;
     function updateFloatingVisibility() {
-      const heroBottom = heroSection.getBoundingClientRect().bottom;
-      const pastHero = heroBottom <= 0;
+      const pastHero = window.scrollY >= heroThreshold;
       if (whatsappBtn) whatsappBtn.classList.toggle('visible', pastHero);
       if (mobileBar)   mobileBar.classList.toggle('visible', pastHero);
     }
