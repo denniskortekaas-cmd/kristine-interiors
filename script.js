@@ -205,18 +205,17 @@
   // ──────────────────────────────────────────────
   // 7. WHATSAPP BUTTON — show after scrolling past hero
   // ──────────────────────────────────────────────
-  const whatsappBtn = document.getElementById('whatsapp-btn');
+  const whatsappBtn  = document.getElementById('whatsapp-btn');
+  const mobileBar   = document.getElementById('mobile-book-bar');
   const heroSection = document.getElementById('hero');
 
-  if (whatsappBtn && heroSection) {
+  if (heroSection) {
     const waObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            whatsappBtn.classList.remove('visible');
-          } else {
-            whatsappBtn.classList.add('visible');
-          }
+          const visible = !entry.isIntersecting;
+          if (whatsappBtn) whatsappBtn.classList.toggle('visible', visible);
+          if (mobileBar)   mobileBar.classList.toggle('visible', visible);
         });
       },
       { threshold: 0 }
