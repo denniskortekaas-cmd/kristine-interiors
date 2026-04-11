@@ -1,5 +1,5 @@
 const express  = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const path     = require('path');
 
 const app  = express();
@@ -108,11 +108,13 @@ app.post('/submit', async function (req, res) {
 </html>
   `;
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
-    await transporter.sendMail({
-      from:     `"Kristine Interiors" <${process.env.GMAIL_USER}>`,
-      to:       process.env.GMAIL_USER,
-      replyTo:  email,
+    await resend.emails.send({
+      from:     'Kristine Interiors <onboarding@resend.dev>',
+      to:       'kristine.interiors.uae@gmail.com',
+      reply_to: email,
       subject:  `New enquiry from ${name}`,
       html,
     });
