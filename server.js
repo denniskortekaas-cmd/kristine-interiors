@@ -110,20 +110,21 @@ app.post('/submit', async function (req, res) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  try {
-    await resend.emails.send({
-      from:     'Kristine Interiors <onboarding@resend.dev>',
-      to:       'kristine.interiors.uae@gmail.com',
-      reply_to: email,
-      subject:  `New enquiry from ${name}`,
-      html,
-    });
+  const { data, error } = await resend.emails.send({
+    from:     'Kristine Interiors <onboarding@resend.dev>',
+    to:       'kristine.interiors.uae@gmail.com',
+    reply_to: email,
+    subject:  `New enquiry from ${name}`,
+    html,
+  });
 
-    return res.json({ ok: true });
-  } catch (err) {
-    console.error('Mail error:', JSON.stringify(err));
-    return res.status(500).json({ ok: false, error: err.message || JSON.stringify(err) });
+  if (error) {
+    console.error('Resend error:', JSON.stringify(error));
+    return res.status(500).json({ ok: false, error: JSON.stringify(error) });
   }
+
+  console.log('Email sent:', data);
+  return res.json({ ok: true });
 });
 
 // Fallback — serve index.html for any unknown route
