@@ -214,7 +214,7 @@
         btnText.hidden     = false;
         btnLoading.hidden  = true;
         submitBtn.disabled = false;
-        alert('Something went wrong. Please try again or email us directly.');
+        alert('Error: ' + (res.error || 'Unknown error'));
       }
     })
     .catch(function () {

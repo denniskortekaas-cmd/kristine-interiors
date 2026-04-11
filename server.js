@@ -121,8 +121,8 @@ app.post('/submit', async function (req, res) {
 
     return res.json({ ok: true });
   } catch (err) {
-    console.error('Mail error:', err);
-    return res.status(500).json({ ok: false, error: 'Failed to send email.' });
+    console.error('Mail error:', JSON.stringify(err));
+    return res.status(500).json({ ok: false, error: err.message || JSON.stringify(err) });
   }
 });
 
