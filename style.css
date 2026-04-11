@@ -1094,8 +1094,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .form-row { grid-template-columns: 1fr; gap: 0; }
   .footer-grid { grid-template-columns: 1fr; gap: 0; }
 
+  .footer-grid { border-bottom: none; }
   .footer-col { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 16px 0; }
-  .footer-col:last-of-type { border-bottom: none; }
 
   .footer-chevron { display: block; }
 
