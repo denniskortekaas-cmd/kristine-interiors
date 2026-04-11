@@ -187,11 +187,38 @@
     btnText.hidden     = true;
     btnLoading.hidden  = false;
 
-    // Simulate async submission (replace with real fetch() call later)
-    setTimeout(function () {
-      form.hidden        = true;
-      successMsg.hidden  = false;
-    }, 1500);
+    var data = {
+      name:           form.querySelector('#name').value.trim(),
+      email:          form.querySelector('#email').value.trim(),
+      phone:          form.querySelector('#phone').value.trim(),
+      'project-type': form.querySelector('#project-type').value,
+      budget:         form.querySelector('#budget').value,
+      message:        form.querySelector('#message').value.trim(),
+    };
+
+    fetch('/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(data),
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (res.ok) {
+        form.hidden       = true;
+        successMsg.hidden = false;
+      } else {
+        btnText.hidden    = false;
+        btnLoading.hidden = true;
+        submitBtn.disabled = false;
+        alert('Something went wrong. Please try again or email us directly.');
+      }
+    })
+    .catch(function () {
+      btnText.hidden    = false;
+      btnLoading.hidden = true;
+      submitBtn.disabled = false;
+      alert('Something went wrong. Please try again or email us directly.');
+    });
   });
 
   // Clear error on input
