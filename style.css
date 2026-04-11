@@ -1140,9 +1140,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .hero-scroll-hint { display: none; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .contact-form-wrap {
-    margin-left: -12px;
-    margin-right: -12px;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
