@@ -9,48 +9,45 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+// Log API key presence on startup
+const apiKey = process.env.RESEND_API_KEY;
+if (!apiKey) {
+  console.error('WARNING: RESEND_API_KEY is not set!');
+} else {
+  console.log('RESEND_API_KEY loaded:', apiKey.slice(0, 6) + '...');
+}
+
+const resend = new Resend(apiKey);
+
 // ── POST /submit ─────────────────────────────────────────────
 app.post('/submit', async function (req, res) {
-  const { name, email, phone, 'project-type': service, budget, message } = req.body;
+  try {
+    const { name, email, phone, 'project-type': service, budget, message } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).json({ ok: false, error: 'Missing required fields.' });
-  }
+    if (!name || !email) {
+      return res.status(400).json({ ok: false, error: 'Missing required fields.' });
+    }
 
-  const serviceLabels = {
-    turnkey:  'Turnkey Design',
-    styling:  'Interior Styling and Furnishing',
-    edesign:  'E-Design Consultation',
-    other:    'Not Sure Yet',
-  };
+    const serviceLabels = {
+      turnkey:  'Turnkey Design',
+      styling:  'Interior Styling and Furnishing',
+      edesign:  'E-Design Consultation',
+      other:    'Not Sure Yet',
+    };
 
-  const budgetLabels = {
-    'under5k':  'Under AED 5,000',
-    '5k-15k':   'AED 5,000 – 15,000',
-    '15k-30k':  'AED 15,000 – 30,000',
-    '30k-60k':  'AED 30,000 – 60,000',
-    '60k+':     'AED 60,000+',
-    'unsure':   'Not Sure Yet',
-  };
+    const budgetLabels = {
+      'under5k':  'Under AED 5,000',
+      '5k-15k':   'AED 5,000 – 15,000',
+      '15k-30k':  'AED 15,000 – 30,000',
+      '30k-60k':  'AED 30,000 – 60,000',
+      '60k+':     'AED 60,000+',
+      'unsure':   'Not Sure Yet',
+    };
 
-  const serviceLabel = serviceLabels[service] || service || '—';
-  const budgetLabel  = budgetLabels[budget]   || budget  || '—';
+    const serviceLabel = serviceLabels[service] || service || '—';
+    const budgetLabel  = budgetLabels[budget]   || budget  || '—';
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-    connectionTimeout: 10000,
-    greetingTimeout:   10000,
-    socketTimeout:     10000,
-  });
-
-  const html = `
+    const html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,25 +103,34 @@ app.post('/submit', async function (req, res) {
   </div>
 </body>
 </html>
-  `;
+    `;
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('Sending email via Resend for:', name, email);
 
-  const { data, error } = await resend.emails.send({
-    from:     'Kristine Interiors <onboarding@resend.dev>',
-    to:       'kristine.interiors.uae@gmail.com',
-    reply_to: email,
-    subject:  `New enquiry from ${name}`,
-    html,
-  });
+    const { data, error } = await resend.emails.send({
+      from:     'Kristine Interiors <onboarding@resend.dev>',
+      to:       'kristine.interiors.uae@gmail.com',
+      reply_to: email,
+      subject:  `New enquiry from ${name}`,
+      html,
+    });
 
-  if (error) {
-    console.error('Resend error:', JSON.stringify(error));
-    return res.status(500).json({ ok: false, error: JSON.stringify(error) });
+    if (error) {
+      const errMsg = error.message || error.name || String(error.statusCode) || 'Resend error';
+      console.error('Resend error name:', error.name);
+      console.error('Resend error message:', error.message);
+      console.error('Resend error statusCode:', error.statusCode);
+      console.error('Resend error (full):', Object.assign({}, error));
+      return res.status(500).json({ ok: false, error: errMsg });
+    }
+
+    console.log('Email sent OK, id:', data && data.id);
+    return res.json({ ok: true });
+
+  } catch (err) {
+    console.error('Unexpected error in /submit:', err.message || err);
+    return res.status(500).json({ ok: false, error: err.message || 'Server error' });
   }
-
-  console.log('Email sent:', data);
-  return res.json({ ok: true });
 });
 
 // Fallback — serve index.html for any unknown route
