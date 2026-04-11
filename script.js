@@ -204,8 +204,8 @@
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (res.ok) {
-        form.hidden       = true;
-        successMsg.hidden = false;
+        form.style.display = 'none';
+        successMsg.hidden  = false;
       } else {
         btnText.hidden    = false;
         btnLoading.hidden = true;
