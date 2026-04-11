@@ -210,6 +210,7 @@
       if (res.ok) {
         form.style.display = 'none';
         successMsg.hidden  = false;
+        if (typeof fbq === 'function') fbq('track', 'Lead');
       } else {
         btnText.hidden     = false;
         btnLoading.hidden  = true;
