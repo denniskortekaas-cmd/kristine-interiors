@@ -196,26 +196,31 @@
       message:        form.querySelector('#message').value.trim(),
     };
 
+    var controller = new AbortController();
+    var timeout = setTimeout(function () { controller.abort(); }, 15000);
+
     fetch('/submit', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data),
+      signal:  controller.signal,
     })
-    .then(function (r) { return r.json(); })
+    .then(function (r) { clearTimeout(timeout); return r.json(); })
     .then(function (res) {
       if (res.ok) {
         form.style.display = 'none';
         successMsg.hidden  = false;
       } else {
-        btnText.hidden    = false;
-        btnLoading.hidden = true;
+        btnText.hidden     = false;
+        btnLoading.hidden  = true;
         submitBtn.disabled = false;
         alert('Something went wrong. Please try again or email us directly.');
       }
     })
     .catch(function () {
-      btnText.hidden    = false;
-      btnLoading.hidden = true;
+      clearTimeout(timeout);
+      btnText.hidden     = false;
+      btnLoading.hidden  = true;
       submitBtn.disabled = false;
       alert('Something went wrong. Please try again or email us directly.');
     });
