@@ -8,7 +8,10 @@
       "Bash(railway whoami:*)",
       "Bash(git --version)",
       "Bash(gh auth:*)",
-      "Read(//Users/denniskortekaas/Desktop/Claude Code Projects/**)"
+      "Read(//Users/denniskortekaas/Desktop/Claude Code Projects/**)",
+      "Bash(uv run:*)",
+      "Bash(python3 ~/.claude/skills/youtube-transcript/get_transcript.py \"https://www.youtube.com/watch?v=XRI9ESmlXWk\" --metadata --timestamps)",
+      "Bash(pip3 install:*)"
     ]
   }
 }
