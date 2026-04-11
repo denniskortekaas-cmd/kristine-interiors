@@ -356,4 +356,14 @@
     else         showImage(currentProject, currentIndex - 1);
   }, { passive: true });
 
+  // ──────────────────────────────────────────────
+  // 9. FOOTER COLLAPSIBLE SECTIONS (mobile)
+  // ──────────────────────────────────────────────
+  document.querySelectorAll('.footer-toggle').forEach(function (toggle) {
+    toggle.addEventListener('click', function () {
+      var col = toggle.closest('.footer-collapsible');
+      col.classList.toggle('open');
+    });
+  });
+
 })();

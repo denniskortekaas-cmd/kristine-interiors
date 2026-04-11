@@ -832,6 +832,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 20px;
 }
 
+.footer-chevron {
+  display: none;
+  width: 16px; height: 16px;
+  color: rgba(255,255,255,0.4);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
 .footer-col ul li { margin-bottom: 10px; }
 .footer-col ul li a { font-size: 14px; color: rgba(255,255,255,0.5); transition: color var(--transition); }
 .footer-col ul li a:hover { color: var(--white); }
@@ -1065,7 +1073,36 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
   .contact-form-wrap { padding: 32px 24px; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
-  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 0; }
+
+  .footer-col { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 16px 0; }
+
+  .footer-chevron { display: block; }
+
+  .footer-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin-bottom: 0;
+    user-select: none;
+  }
+
+  .footer-collapse-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+  }
+
+  .footer-collapsible.open .footer-collapse-body {
+    max-height: 200px;
+    margin-top: 16px;
+  }
+
+  .footer-collapsible.open .footer-chevron {
+    transform: rotate(180deg);
+  }
 
   .whatsapp-btn { bottom: 64px; right: 20px; width: 48px; height: 48px; }
   .whatsapp-btn svg { width: 24px; height: 24px; }
