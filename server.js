@@ -1,51 +1,96 @@
-const express  = require('express');
+const express   = require('express');
 const { Resend } = require('resend');
-const path     = require('path');
+const path      = require('path');
+const helmet    = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ── Security headers (CSP disabled to allow Meta Pixel + Google Fonts) ───────
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// ── Rate limiting on form endpoint ────────────────────────────────────────────
+const submitLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: function (req, res) {
+    res.status(429).json({ ok: false, error: 'Too many submissions, please try again later.' });
+  },
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ── Block sensitive files from static serving ─────────────────────────────────
+app.use(function (req, res, next) {
+  const blocked = ['/package.json', '/package-lock.json', '/.env', '/server.js'];
+  if (blocked.includes(req.path)) return res.status(403).end();
+  next();
+});
+
 app.use(express.static(path.join(__dirname)));
 
-// Log API key presence on startup
+// ── Validate API key at startup ───────────────────────────────────────────────
 const apiKey = process.env.RESEND_API_KEY;
 if (!apiKey) {
-  console.error('WARNING: RESEND_API_KEY is not set!');
-} else {
-  console.log('RESEND_API_KEY loaded:', apiKey.slice(0, 6) + '...');
+  console.error('FATAL: RESEND_API_KEY is not set — exiting.');
+  process.exit(1);
 }
 
 const resend = new Resend(apiKey);
 
-// ── POST /submit ─────────────────────────────────────────────
-app.post('/submit', async function (req, res) {
+// ── HTML escape helper ────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── POST /submit ──────────────────────────────────────────────────────────────
+app.post('/submit', submitLimiter, async function (req, res) {
   try {
     const { name, email, phone, 'project-type': service, budget, message } = req.body;
 
-    if (!name || !email) {
+    // Server-side validation
+    if (!name || !name.toString().trim()) {
       return res.status(400).json({ ok: false, error: 'Missing required fields.' });
     }
+    if (!email || !email.toString().trim()) {
+      return res.status(400).json({ ok: false, error: 'Missing required fields.' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toString().trim())) {
+      return res.status(400).json({ ok: false, error: 'Invalid email address.' });
+    }
+    if (name.toString().length > 100)    return res.status(400).json({ ok: false, error: 'Name too long.' });
+    if (email.toString().length > 254)   return res.status(400).json({ ok: false, error: 'Email too long.' });
+    if (message && message.toString().length > 2000) return res.status(400).json({ ok: false, error: 'Message too long.' });
 
     const serviceLabels = {
-      turnkey:  'Turnkey Design',
-      styling:  'Interior Styling and Furnishing',
-      edesign:  'E-Design Consultation',
-      other:    'Not Sure Yet',
+      turnkey: 'Turnkey Design',
+      styling: 'Interior Styling and Furnishing',
+      edesign: 'E-Design Consultation',
+      other:   'Not Sure Yet',
     };
 
     const budgetLabels = {
-      'under5k':  'Under AED 5,000',
-      '5k-15k':   'AED 5,000 – 15,000',
-      '15k-30k':  'AED 15,000 – 30,000',
-      '30k-60k':  'AED 30,000 – 60,000',
-      '60k+':     'AED 60,000+',
-      'unsure':   'Not Sure Yet',
+      'under5k': 'Under AED 5,000',
+      '5k-15k':  'AED 5,000 – 15,000',
+      '15k-30k': 'AED 15,000 – 30,000',
+      '30k-60k': 'AED 30,000 – 60,000',
+      '60k+':    'AED 60,000+',
+      'unsure':  'Not Sure Yet',
     };
 
-    const serviceLabel = serviceLabels[service] || service || '—';
-    const budgetLabel  = budgetLabels[budget]   || budget  || '—';
+    // Safe labels — never reflect raw user input
+    const serviceLabel = serviceLabels[service] || '—';
+    const budgetLabel  = budgetLabels[budget]   || '—';
+
+    // Escape all user-supplied values before inserting into HTML
+    const safeName    = esc(name);
+    const safeEmail   = esc(email);
+    const safePhone   = esc(phone) || '—';
+    const safeMessage = message ? esc(message).replace(/\n/g, '<br>') : '—';
 
     const html = `
 <!DOCTYPE html>
@@ -76,13 +121,13 @@ app.post('/submit', async function (req, res) {
     </div>
     <div class="body">
       <p class="label">Name</p>
-      <p class="value">${name}</p>
+      <p class="value">${safeName}</p>
 
       <p class="label">Email</p>
-      <p class="value"><a href="mailto:${email}" style="color:#c4a96a;">${email}</a></p>
+      <p class="value"><a href="mailto:${safeEmail}" style="color:#c4a96a;">${safeEmail}</a></p>
 
       <p class="label">WhatsApp / Phone</p>
-      <p class="value">${phone || '—'}</p>
+      <p class="value">${safePhone}</p>
 
       <p class="label">Service</p>
       <p class="value">${serviceLabel}</p>
@@ -92,10 +137,10 @@ app.post('/submit', async function (req, res) {
 
       <p class="label">Message</p>
       <div class="message-box">
-        <p>${message ? message.replace(/\n/g, '<br>') : '—'}</p>
+        <p>${safeMessage}</p>
       </div>
 
-      <a href="mailto:${email}" class="reply-btn">Reply to ${name}</a>
+      <a href="mailto:${safeEmail}" class="reply-btn">Reply to ${safeName}</a>
     </div>
     <div class="footer">
       <p>Submitted via kristineinteriors.com</p>
@@ -116,12 +161,8 @@ app.post('/submit', async function (req, res) {
     });
 
     if (error) {
-      const errMsg = error.message || error.name || String(error.statusCode) || 'Resend error';
-      console.error('Resend error name:', error.name);
-      console.error('Resend error message:', error.message);
-      console.error('Resend error statusCode:', error.statusCode);
-      console.error('Resend error (full):', Object.assign({}, error));
-      return res.status(500).json({ ok: false, error: errMsg });
+      console.error('Resend error:', error.name, error.message, error.statusCode);
+      return res.status(500).json({ ok: false, error: 'Something went wrong, please try again.' });
     }
 
     console.log('Email sent OK, id:', data && data.id);
@@ -129,7 +170,7 @@ app.post('/submit', async function (req, res) {
 
   } catch (err) {
     console.error('Unexpected error in /submit:', err.message || err);
-    return res.status(500).json({ ok: false, error: err.message || 'Server error' });
+    return res.status(500).json({ ok: false, error: 'Something went wrong, please try again.' });
   }
 });
 
