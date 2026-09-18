@@ -355,6 +355,12 @@ app.post('/intake', intakeLimiter, async function (req, res) {
   }
 });
 
+// Kristine's own link maker. Not linked from anywhere and noindex; it only
+// assembles a URL, so there is nothing behind it to protect.
+app.get('/links', function (req, res) {
+  res.sendFile(path.join(__dirname, 'links.html'));
+});
+
 // Clean URLs for the questionnaire. /intake is the neutral link; /intake/anna-petrova
 // is the personal one, and the page greets that client by name.
 app.get(['/intake', '/intake/:client'], function (req, res) {

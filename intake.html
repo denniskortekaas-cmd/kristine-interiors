@@ -625,11 +625,26 @@
        No database behind it. The link only decides who is greeted, and tells
        Kristine which client the answers belong to. ── */
     var clientName = (function () {
+      // Anna, ANNA, josé, o'brien and Анна all have to come out spelled properly.
+      // Deliberate mixed case (McDonald) is left alone; SHOUTING and lowercase are tidied.
+      function tidyCase(word) {
+        var innerUpper = /\p{Lu}/u.test(word.slice(1));
+        var allUpper = word === word.toLocaleUpperCase();
+        var base = (!innerUpper || allUpper) ? word.toLocaleLowerCase() : word;
+        return base.replace(/(^|['\u2019-])(\p{L})/gu, function (m, sep, ch) {
+          return sep + ch.toLocaleUpperCase();
+        });
+      }
+
       var fromQuery = new URLSearchParams(location.search).get('n');
-      var raw = fromQuery || location.pathname.replace(/^\/intake\/?/, '').split('/')[0];
-      raw = decodeURIComponent(raw || '').replace(/[-_+]+/g, ' ').replace(/\s+/g, ' ').trim();
-      if (!raw || raw.length > 60 || !/^[\p{L}\p{M}\s'.-]+$/u.test(raw)) return '';
-      return raw.replace(/\b\p{L}/gu, function (c) { return c.toUpperCase(); });
+      var raw = fromQuery !== null ? fromQuery : location.pathname.replace(/^\/intake\/?/, '').split('/')[0];
+      try { raw = decodeURIComponent(raw || ''); } catch (e) { return ''; }
+      // A path joins the words with hyphens, so those become spaces. In ?n= the name is
+      // written out, so a hyphenated surname such as Anne-Marie stays as it is.
+      if (fromQuery === null) raw = raw.replace(/[-_+]+/g, ' ');
+      raw = raw.replace(/\s+/g, ' ').trim();
+      if (!raw || raw.length > 60 || !/^[\p{L}\p{M}\s'\u2019.-]+$/u.test(raw)) return '';
+      return raw.split(' ').map(tidyCase).join(' ');
     })();
 
     if (clientName) {

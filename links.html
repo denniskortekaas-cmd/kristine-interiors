@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+  <title>Make a Client Link · Kristine Interiors</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream:#FAF7F2; --cream-dark:#F0EAE0; --gold:#C9A96E; --gold-dark:#A8884A;
+      --gold-soft:rgba(201,169,110,0.10); --brown-dark:#2C1A0E; --brown-mid:#5C3D2E;
+      --text-primary:#2C1A0E; --text-secondary:#6B5344; --line:#E4DACB; --white:#FFFFFF;
+      --font-serif:'Playfair Display',Georgia,serif; --font-sans:'DM Sans',system-ui,sans-serif;
+      --radius:4px;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { -webkit-font-smoothing:antialiased; }
+    body {
+      font-family:var(--font-sans); font-size:16px; line-height:1.7; color:var(--text-primary);
+      background:
+        radial-gradient(900px 520px at 88% -8%, rgba(201,169,110,0.14), transparent 62%),
+        var(--cream);
+      background-attachment:fixed; min-height:100vh;
+    }
+    a { color:inherit; }
+    .wrap { max-width:680px; margin:0 auto; padding:56px 24px 80px; }
+
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+    h1 { font-family:var(--font-serif); font-size:clamp(1.9rem,5vw,2.6rem); font-weight:500; line-height:1.18; margin-bottom:16px; }
+    h1 em { font-style:italic; font-weight:400; color:var(--brown-mid); }
+    .intro { color:var(--text-secondary); max-width:52ch; margin-bottom:36px; }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 2px 12px rgba(44,26,14,0.06); padding:32px; margin-bottom:20px; }
+
+    label.q { display:block; font-size:15px; font-weight:500; margin-bottom:8px; }
+    .hint { display:block; font-size:13px; font-weight:400; color:var(--text-secondary); margin-top:2px; }
+    input[type=text] {
+      width:100%; padding:15px 17px; font-family:inherit; font-size:17px; color:var(--text-primary);
+      background:var(--cream); border:1px solid var(--line); border-radius:var(--radius);
+      transition:border-color .2s, box-shadow .2s;
+    }
+    input::placeholder { color:#A99884; }
+    input:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,110,0.16); background:var(--white); }
+
+    .preview { margin-top:26px; padding-top:24px; border-top:1px solid var(--line); }
+    .preview-label { font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:10px; }
+    .greeting { font-family:var(--font-serif); font-size:23px; line-height:1.3; color:var(--text-primary); }
+    .greeting em { font-style:italic; color:var(--brown-mid); }
+    .greeting.muted { color:var(--text-secondary); font-size:17px; font-family:var(--font-sans); font-style:normal; }
+
+    .link-row { display:flex; gap:10px; align-items:stretch; margin-top:10px; }
+    .link-box {
+      flex:1; min-width:0; padding:14px 16px; background:var(--cream); border:1px solid var(--line);
+      border-radius:var(--radius); font-size:15px; word-break:break-all; line-height:1.5;
+    }
+    .link-box.empty { color:var(--text-secondary); }
+    button.copy {
+      flex:none; padding:0 22px; border:none; border-radius:var(--radius);
+      background:var(--gold); color:var(--white); font-family:var(--font-sans);
+      font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
+      cursor:pointer; transition:background .2s; white-space:nowrap;
+    }
+    button.copy:hover:not(:disabled) { background:var(--gold-dark); }
+    button.copy:disabled { opacity:0.45; cursor:default; }
+    button.copy.done { background:var(--brown-mid); }
+
+    .message-box {
+      margin-top:10px; padding:16px 18px; background:var(--cream);
+      border-left:2px solid var(--gold); border-radius:0 var(--radius) var(--radius) 0;
+      font-size:15px; color:var(--text-primary); line-height:1.65; white-space:pre-wrap;
+    }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .action {
+      display:inline-block; padding:12px 22px; border:1px solid var(--line); border-radius:var(--radius);
+      background:var(--white); font-size:11px; font-weight:500; letter-spacing:0.14em;
+      text-transform:uppercase; cursor:pointer; transition:all .2s; color:var(--text-primary);
+    }
+    .action:hover { border-color:var(--gold); color:var(--gold-dark); }
+    .action[aria-disabled=true] { opacity:0.45; pointer-events:none; }
+
+    .recent h2 { font-family:var(--font-serif); font-size:20px; font-weight:500; margin-bottom:4px; }
+    .recent p.sub { color:var(--text-secondary); font-size:14px; margin-bottom:18px; }
+    ul.list { list-style:none; }
+    ul.list li { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--cream-dark); }
+    ul.list li:last-child { border-bottom:none; }
+    ul.list .who { font-weight:500; }
+    ul.list .when { color:var(--text-secondary); font-size:13px; }
+    ul.list .spacer { flex:1; }
+    ul.list a.open { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-dark); border-bottom:1px solid var(--gold); padding-bottom:2px; }
+    ul.list button.mini {
+      border:none; background:none; font-family:inherit; font-size:11px; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--gold-dark); cursor:pointer; border-bottom:1px solid var(--gold); padding:0 0 2px;
+    }
+    .empty-note { color:var(--text-secondary); font-size:14px; }
+
+    footer { text-align:center; color:var(--text-secondary); font-size:12.5px; margin-top:34px; }
+    footer a { color:var(--gold-dark); }
+
+    @media (max-width:680px) {
+      .wrap { padding:36px 18px 60px; }
+      .card { padding:24px 20px; }
+      .link-row { flex-direction:column; }
+      button.copy { padding:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="eyebrow">Internal tool</p>
+    <h1>Make a Link<br /><em>For One Client</em></h1>
+    <p class="intro">
+      Type a client's name and you get their own questionnaire link, greeting them by name.
+      Nothing is set up behind the scenes and nothing needs to be saved, the link works the moment it exists.
+    </p>
+
+    <div class="card">
+      <label class="q" for="client">Client name
+        <span class="hint">First name is enough. A full name makes it easier to recognise the answers later.</span>
+      </label>
+      <input type="text" id="client" placeholder="Anna Petrova" autocomplete="off" autofocus />
+
+      <div class="preview">
+        <p class="preview-label">She will see</p>
+        <p class="greeting muted" id="greeting">Tell Me About Your Space</p>
+
+        <p class="preview-label" style="margin-top:22px">Her link</p>
+        <div class="link-row">
+          <div class="link-box empty" id="link">Type a name above</div>
+          <button class="copy" id="copy-link" disabled>Copy</button>
+        </div>
+
+        <p class="preview-label" style="margin-top:22px">Message to send</p>
+        <div class="message-box" id="message"></div>
+        <div class="actions">
+          <a class="action" id="send-whatsapp" aria-disabled="true" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <span class="action" id="copy-message" aria-disabled="true">Copy message</span>
+          <a class="action" id="open-link" aria-disabled="true" target="_blank" rel="noopener">Preview it</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card recent">
+      <h2>Links you made</h2>
+      <p class="sub">Kept on this device only, so you can find a link back without making it again.</p>
+      <ul class="list" id="recent"></ul>
+      <p class="empty-note" id="recent-empty">Nothing yet.</p>
+    </div>
+
+    <footer>
+      Kristine Interiors · <a href="/">back to the site</a>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    var input     = document.getElementById('client');
+    var greeting  = document.getElementById('greeting');
+    var linkBox   = document.getElementById('link');
+    var copyLink  = document.getElementById('copy-link');
+    var message   = document.getElementById('message');
+    var waBtn     = document.getElementById('send-whatsapp');
+    var copyMsg   = document.getElementById('copy-message');
+    var openBtn   = document.getElementById('open-link');
+    var recentEl  = document.getElementById('recent');
+    var emptyNote = document.getElementById('recent-empty');
+    var STORE_KEY = 'kristine-links';
+
+    /* The same tidy-up the questionnaire itself does, so the preview never lies */
+    function tidyCase(word) {
+      var innerUpper = /\p{Lu}/u.test(word.slice(1));
+      var allUpper = word === word.toLocaleUpperCase();
+      var base = (!innerUpper || allUpper) ? word.toLocaleLowerCase() : word;
+      return base.replace(/(^|['’-])(\p{L})/gu, function (m, sep, ch) { return sep + ch.toLocaleUpperCase(); });
+    }
+    function tidyName(raw) {
+      raw = String(raw || '').replace(/\s+/g, ' ').trim();
+      if (!raw || raw.length > 60 || !/^[\p{L}\p{M}\s'’.-]+$/u.test(raw)) return '';
+      return raw.split(' ').map(tidyCase).join(' ');
+    }
+    /* The questionnaire turns hyphens in a path back into spaces, so O’Brien and
+       Anne-Marie cannot survive as a path. Rather than guess, build the slug, read it
+       back exactly as the questionnaire would, and keep the pretty URL only when the
+       name comes out unchanged. Everything else falls back to ?n=, which is uglier
+       but always spells the client's name right. */
+    function buildLink(name) {
+      var slug = name.toLowerCase().replace(/['’.]/g, '').replace(/\s+/g, '-');
+      var readBack = tidyName(slug.replace(/[-_+]+/g, ' '));
+      return (/^[a-z-]+$/.test(slug) && readBack === name)
+        ? location.origin + '/intake/' + slug
+        : location.origin + '/intake?n=' + encodeURIComponent(name);
+    }
+
+    function firstName(name) { return name.split(' ')[0]; }
+
+    var current = { name: '', url: '', text: '' };
+
+    function render() {
+      var name = tidyName(input.value);
+      var typed = input.value.trim();
+
+      if (!name) {
+        greeting.className = 'greeting muted';
+        greeting.textContent = typed
+          ? 'That does not look like a name, so she would see the questionnaire without a greeting.'
+          : 'Tell Me About Your Space';
+        linkBox.className = 'link-box empty';
+        linkBox.textContent = typed ? location.origin + '/intake' : 'Type a name above';
+        copyLink.disabled = true;
+        message.textContent = '';
+        waBtn.removeAttribute('href');
+        openBtn.removeAttribute('href');
+        [waBtn, copyMsg, openBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
+        current = { name: '', url: '', text: '' };
+        return;
+      }
+
+      var url = buildLink(name);
+      var text = 'Hi ' + firstName(name) + ', lovely speaking with you. Here are a few questions '
+               + 'about your space, so I can come to our consultation with a real design direction.\n\n'
+               + url + '\n\n'
+               + 'It takes about ten minutes and saves itself as you go, so you can stop halfway and '
+               + 'come back to it. Kristine';
+
+      greeting.className = 'greeting';
+      greeting.innerHTML = 'Tell Me About <em>Your Space, '
+        + firstName(name).replace(/[<>&]/g, '') + '</em>';
+      linkBox.className = 'link-box';
+      linkBox.textContent = url;
+      copyLink.disabled = false;
+      copyLink.classList.remove('done');
+      copyLink.textContent = 'Copy';
+      message.textContent = text;
+      waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(text);
+      openBtn.href = url;
+      [waBtn, copyMsg, openBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
+      current = { name: name, url: url, text: text };
+    }
+
+    function copy(text, button, labelDone, labelBack) {
+      function flash() {
+        button.textContent = labelDone;
+        button.classList.add('done');
+        setTimeout(function () { button.textContent = labelBack; button.classList.remove('done'); }, 1600);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(flash, function () { fallback(text, flash); });
+      } else {
+        fallback(text, flash);
+      }
+    }
+    function fallback(text, done) {
+      var area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand('copy'); done(); } catch (e) {}
+      document.body.removeChild(area);
+    }
+
+    /* Remember what was made, so a link can be found back without retyping */
+    function load() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch (e) { return []; }
+    }
+    function remember(entry) {
+      var list = load().filter(function (e) { return e.url !== entry.url; });
+      list.unshift({ name: entry.name, url: entry.url, at: Date.now() });
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 12))); } catch (e) {}
+      renderRecent();
+    }
+    function ago(ts) {
+      var mins = Math.round((Date.now() - ts) / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + ' min ago';
+      var hours = Math.round(mins / 60);
+      if (hours < 24) return hours === 1 ? 'an hour ago' : hours + ' hours ago';
+      var days = Math.round(hours / 24);
+      return days === 1 ? 'yesterday' : days + ' days ago';
+    }
+    function renderRecent() {
+      var list = load();
+      recentEl.innerHTML = '';
+      emptyNote.hidden = list.length > 0;
+      list.forEach(function (entry) {
+        var li = document.createElement('li');
+
+        var who = document.createElement('span');
+        who.className = 'who';
+        who.textContent = entry.name;
+
+        var when = document.createElement('span');
+        when.className = 'when';
+        when.textContent = ago(entry.at);
+
+        var spacer = document.createElement('span');
+        spacer.className = 'spacer';
+
+        var again = document.createElement('button');
+        again.className = 'mini';
+        again.type = 'button';
+        again.textContent = 'Copy';
+        again.addEventListener('click', function () { copy(entry.url, again, 'Copied', 'Copy'); });
+
+        var open = document.createElement('a');
+        open.className = 'open';
+        open.href = entry.url;
+        open.target = '_blank';
+        open.rel = 'noopener';
+        open.textContent = 'Open';
+
+        li.append(who, when, spacer, again, open);
+        recentEl.appendChild(li);
+      });
+    }
+
+    copyLink.addEventListener('click', function () {
+      if (!current.url) return;
+      copy(current.url, copyLink, 'Copied', 'Copy');
+      remember(current);
+    });
+    copyMsg.addEventListener('click', function () {
+      if (!current.text) return;
+      copy(current.text, copyMsg, 'Copied', 'Copy message');
+      remember(current);
+    });
+    waBtn.addEventListener('click', function () { if (current.url) remember(current); });
+
+    input.addEventListener('input', render);
+    render();
+    renderRecent();
+  })();
+  </script>
+</body>
+</html>
