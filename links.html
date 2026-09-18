@@ -93,11 +93,30 @@
     ul.list .when { color:var(--text-secondary); font-size:13px; }
     ul.list .spacer { flex:1; }
     ul.list a.open { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-dark); border-bottom:1px solid var(--gold); padding-bottom:2px; }
-    ul.list button.mini {
+    button.mini {
       border:none; background:none; font-family:inherit; font-size:11px; letter-spacing:0.14em;
       text-transform:uppercase; color:var(--gold-dark); cursor:pointer; border-bottom:1px solid var(--gold); padding:0 0 2px;
     }
     .empty-note { color:var(--text-secondary); font-size:14px; }
+
+    button.mini.remove { color:var(--text-secondary); border-bottom-color:var(--line); }
+    button.mini.remove:hover { color:#B4462F; border-bottom-color:#B4462F; }
+
+    .undo {
+      display:flex; align-items:center; gap:12px; margin-top:16px; padding:12px 16px;
+      background:var(--gold-soft); border-left:2px solid var(--gold);
+      border-radius:0 var(--radius) var(--radius) 0; font-size:14px; color:var(--text-secondary);
+    }
+    .undo button { margin-left:auto; }
+    .undo[hidden] { display:none; }
+
+    .clear-row { margin-top:18px; padding-top:16px; border-top:1px solid var(--cream-dark); }
+    .clear {
+      border:none; background:none; padding:0; font-family:inherit; font-size:13px;
+      color:var(--text-secondary); cursor:pointer; border-bottom:1px solid var(--line);
+      padding-bottom:2px; transition:color .2s, border-color .2s;
+    }
+    .clear:hover { color:#B4462F; border-bottom-color:#B4462F; }
 
     footer { text-align:center; color:var(--text-secondary); font-size:12.5px; margin-top:34px; }
     footer a { color:var(--gold-dark); }
@@ -107,6 +126,12 @@
       .card { padding:24px 20px; }
       .link-row { flex-direction:column; }
       button.copy { padding:14px; }
+      /* Names wrap badly beside three actions, so the name gets its own line */
+      ul.list li { flex-wrap:wrap; row-gap:10px; padding:14px 0; }
+      ul.list .who { flex-basis:100%; }
+      ul.list .when { margin-right:auto; }
+      ul.list .spacer { display:none; }
+      ul.list li > :not(.who):not(.when) { margin-left:16px; }
     }
   </style>
 </head>
@@ -147,9 +172,19 @@
 
     <div class="card recent">
       <h2>Links you made</h2>
-      <p class="sub">Kept on this device only, so you can find a link back without making it again.</p>
+      <p class="sub">
+        Kept on this device only, so you can find a link back without making it again.
+        Removing one tidies this list, it does not switch the link off.
+      </p>
       <ul class="list" id="recent"></ul>
       <p class="empty-note" id="recent-empty">Nothing yet.</p>
+      <div class="undo" id="undo" hidden>
+        <span id="undo-text"></span>
+        <button type="button" class="mini" id="undo-btn">Undo</button>
+      </div>
+      <div class="clear-row" id="clear-row" hidden>
+        <button type="button" class="clear" id="clear-all">Clear the whole list</button>
+      </div>
     </div>
 
     <footer>
@@ -169,6 +204,11 @@
     var openBtn   = document.getElementById('open-link');
     var recentEl  = document.getElementById('recent');
     var emptyNote = document.getElementById('recent-empty');
+    var undoBar   = document.getElementById('undo');
+    var undoText  = document.getElementById('undo-text');
+    var undoBtn   = document.getElementById('undo-btn');
+    var clearRow  = document.getElementById('clear-row');
+    var clearAll  = document.getElementById('clear-all');
     var STORE_KEY = 'kristine-links';
 
     /* The same tidy-up the questionnaire itself does, so the preview never lies */
@@ -269,11 +309,46 @@
     function load() {
       try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch (e) { return []; }
     }
+    function save(list) {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 12))); } catch (e) {}
+      renderRecent();
+    }
+
+    /* Nothing is destroyed on a single click: what was removed stays in reach
+       until the next removal or a reload. The link itself keeps working either
+       way, since it is only a URL. */
+    var undone = null;
+    var undoTimer = null;
+
+    function forget(url) {
+      var list = load();
+      var index = list.findIndex(function (e) { return e.url === url; });
+      if (index === -1) return;
+      undone = { entry: list[index], index: index };
+      list.splice(index, 1);
+      save(list);
+      undoText.textContent = 'Removed ' + undone.entry.name + '.';
+      undoBar.hidden = false;
+      clearTimeout(undoTimer);
+      undoTimer = setTimeout(hideUndo, 12000);
+    }
+    function undoForget() {
+      if (!undone) return;
+      var list = load();
+      list.splice(Math.min(undone.index, list.length), 0, undone.entry);
+      save(list);
+      hideUndo();
+    }
+    function hideUndo() {
+      undone = null;
+      undoBar.hidden = true;
+      clearTimeout(undoTimer);
+    }
+
     function remember(entry) {
       var list = load().filter(function (e) { return e.url !== entry.url; });
       list.unshift({ name: entry.name, url: entry.url, at: Date.now() });
-      try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 12))); } catch (e) {}
-      renderRecent();
+      save(list);
     }
     function ago(ts) {
       var mins = Math.round((Date.now() - ts) / 60000);
@@ -288,6 +363,7 @@
       var list = load();
       recentEl.innerHTML = '';
       emptyNote.hidden = list.length > 0;
+      clearRow.hidden = list.length < 2;
       list.forEach(function (entry) {
         var li = document.createElement('li');
 
@@ -315,7 +391,14 @@
         open.rel = 'noopener';
         open.textContent = 'Open';
 
-        li.append(who, when, spacer, again, open);
+        var drop = document.createElement('button');
+        drop.className = 'mini remove';
+        drop.type = 'button';
+        drop.textContent = 'Remove';
+        drop.setAttribute('aria-label', 'Remove ' + entry.name + ' from this list');
+        drop.addEventListener('click', function () { forget(entry.url); });
+
+        li.append(who, when, spacer, again, open, drop);
         recentEl.appendChild(li);
       });
     }
@@ -331,6 +414,15 @@
       remember(current);
     });
     waBtn.addEventListener('click', function () { if (current.url) remember(current); });
+
+    undoBtn.addEventListener('click', undoForget);
+    clearAll.addEventListener('click', function () {
+      var count = load().length;
+      if (!count) return;
+      if (!confirm('Remove all ' + count + ' links from this list? The links themselves keep working.')) return;
+      save([]);
+      hideUndo();
+    });
 
     input.addEventListener('input', render);
     render();
