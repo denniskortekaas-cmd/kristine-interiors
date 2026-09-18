@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+  <title>Project Questionnaire · Kristine Interiors</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream:        #FAF7F2;
+      --cream-dark:   #F0EAE0;
+      --gold:         #C9A96E;
+      --gold-dark:    #A8884A;
+      --gold-soft:    rgba(201,169,110,0.10);
+      --brown-dark:   #2C1A0E;
+      --brown-mid:    #5C3D2E;
+      --text-primary: #2C1A0E;
+      --text-secondary:#6B5344;
+      --line:         #E4DACB;
+      --white:        #FFFFFF;
+
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+
+      --radius: 4px;
+      --shadow-sm: 0 2px 12px rgba(44,26,14,0.06);
+      --shadow-md: 0 8px 32px rgba(44,26,14,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background:
+        radial-gradient(900px 520px at 88% -8%, rgba(201,169,110,0.14), transparent 62%),
+        radial-gradient(700px 480px at 4% 2%, rgba(92,61,46,0.06), transparent 60%),
+        var(--cream);
+      background-attachment: fixed;
+    }
+
+    a { color: inherit; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* ── Top bar ── */
+    .top {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(250,247,242,0.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-inner {
+      max-width: 760px; margin: 0 auto;
+      padding: 13px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .top-logo { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: none; }
+    .top-name { font-family: var(--font-serif); font-size: 16px; font-weight: 500; letter-spacing: 0.01em; }
+    .top-step { margin-left: auto; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
+    .bar { height: 2px; background: var(--cream-dark); }
+    .bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); transition: width 0.4s ease; }
+
+    /* ── Layout ── */
+    .wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 90px; }
+
+    .eyebrow {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 2.9rem);
+      font-weight: 500; line-height: 1.18; letter-spacing: -0.01em;
+      margin-bottom: 18px;
+    }
+    h1 em { font-style: italic; font-weight: 400; color: var(--brown-mid); }
+
+    .intro { color: var(--text-secondary); max-width: 56ch; margin-bottom: 24px; }
+
+    .note {
+      border-left: 2px solid var(--gold);
+      background: var(--gold-soft);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 18px 22px; margin-bottom: 26px;
+    }
+    .note b { display: block; font-family: var(--font-serif); font-size: 17px; font-weight: 500; margin-bottom: 4px; }
+    .note p { color: var(--text-secondary); font-size: 14.5px; line-height: 1.65; }
+
+    .facts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 44px; }
+    .fact {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 15px; border: 1px solid var(--line); border-radius: 999px;
+      font-size: 12.5px; color: var(--text-secondary); background: rgba(255,255,255,0.6);
+    }
+    .fact i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+
+    /* ── Sections ── */
+    section {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 34px 34px 14px;
+      margin-bottom: 20px;
+    }
+    .sec-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 26px; }
+    .sec-num {
+      flex: none; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(201,169,110,0.5); background: var(--gold-soft);
+      color: var(--gold-dark); display: grid; place-items: center;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.04em; margin-top: 3px;
+    }
+    .sec-head h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 500; line-height: 1.3; }
+    .sec-head p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-top: 2px; }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 24px; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    label.q { display: block; font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+    .hint { display: block; font-size: 13px; font-weight: 400; color: var(--text-secondary); margin-top: 2px; }
+    .req { color: var(--gold-dark); }
+
+    input[type=text], input[type=email], input[type=tel], textarea, select {
+      width: 100%; padding: 13px 16px;
+      font-family: inherit; font-size: 15px; color: var(--text-primary);
+      background: var(--cream); border: 1px solid var(--line);
+      border-radius: var(--radius); transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder, textarea::placeholder { color: #A99884; }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.16);
+      background: var(--white);
+    }
+    textarea { min-height: 108px; resize: vertical; line-height: 1.65; }
+    select {
+      appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5344' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
+      padding-right: 44px;
+    }
+    input.error, textarea.error { border-color: #B4462F; background: #FDF6F4; }
+    .field-error { display: block; font-size: 13px; color: #B4462F; margin-top: 6px; }
+
+    /* ── Choice chips ── */
+    .choices { display: flex; flex-wrap: wrap; gap: 9px; }
+    .choice { position: relative; }
+    .choice input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .choice span {
+      display: block; padding: 10px 17px;
+      border: 1px solid var(--line); border-radius: 999px;
+      font-size: 14px; background: var(--cream); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .choice span:hover { border-color: var(--gold); }
+    .choice input:checked + span {
+      background: var(--gold); border-color: var(--gold);
+      color: var(--white); font-weight: 500;
+      box-shadow: 0 4px 14px rgba(201,169,110,0.34);
+    }
+    .choice input:focus-visible + span { box-shadow: 0 0 0 3px rgba(201,169,110,0.25); }
+
+    /* ── Closing card ── */
+    .closing {
+      background: var(--brown-dark);
+      border-radius: var(--radius);
+      padding: 38px 34px;
+      margin-top: 28px;
+      color: var(--white);
+    }
+    .closing .eyebrow { color: var(--gold); }
+    .closing h2 { font-family: var(--font-serif); font-size: 26px; font-weight: 500; margin-bottom: 8px; }
+    .closing p { color: rgba(255,255,255,0.62); font-size: 14.5px; margin-bottom: 22px; }
+    .closing .warn { color: var(--gold); font-size: 13.5px; margin: -12px 0 18px; min-height: 1px; }
+
+    button[type=submit] {
+      width: 100%; padding: 17px 24px; border: none; border-radius: var(--radius);
+      background: var(--gold); color: var(--white);
+      font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.25s;
+    }
+    button[type=submit]:hover:not(:disabled) { background: var(--gold-dark); }
+    button[type=submit]:disabled { opacity: 0.6; cursor: default; }
+    .saved { text-align: center; color: rgba(255,255,255,0.40); font-size: 12.5px; margin-top: 14px; min-height: 18px; }
+    .send-error { color: #E9A99B; font-size: 14px; text-align: center; margin-top: 14px; }
+
+    /* ── Success ── */
+    .done { text-align: center; padding: 70px 30px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-md); }
+    .done svg { width: 54px; height: 54px; color: var(--gold); margin: 0 auto 22px; }
+    .done h2 { font-family: var(--font-serif); font-size: 32px; font-weight: 500; margin-bottom: 12px; }
+    .done h2 em { font-style: italic; color: var(--brown-mid); }
+    .done p { color: var(--text-secondary); max-width: 44ch; margin: 0 auto 8px; }
+    .done .back { display: inline-block; margin-top: 26px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-dark); border-bottom: 1px solid var(--gold); padding-bottom: 3px; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 12.5px; margin-top: 40px; }
+    footer a { color: var(--gold-dark); }
+
+    @media (max-width: 680px) {
+      .wrap { padding: 36px 18px 64px; }
+      section { padding: 24px 20px 6px; }
+      .closing { padding: 28px 22px; }
+      .pair { grid-template-columns: 1fr; gap: 0; }
+      .pair .field { margin-bottom: 24px; }
+      .sec-head { gap: 12px; }
+      .sec-head h2 { font-size: 20px; }
+      .top-inner { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top">
+    <div class="top-inner">
+      <img src="/images/503102722_18060370490274930_4810322466840877074_n.jpg" alt="" class="top-logo" />
+      <span class="top-name">Kristine Interiors</span>
+      <span class="top-step" id="step">0 of 5</span>
+    </div>
+    <div class="bar"><span id="bar"></span></div>
+  </div>
+
+  <div class="wrap">
+
+    <div id="intake-view">
+      <p class="eyebrow">Project Questionnaire</p>
+      <h1 id="headline">Tell Me About<br /><em>Your Space</em></h1>
+      <p class="intro">
+        Thank you for getting in touch. These questions help me understand your home, how you live in it,
+        and the feeling you are after, so that our first conversation starts with a real design direction
+        rather than a blank page.
+      </p>
+
+      <div class="note">
+        <b>There are no wrong answers.</b>
+        <p>
+          Anything you leave blank, we simply talk through together. Take your time on the sections about
+          style and how you use your home, as those shape the design more than anything else.
+        </p>
+      </div>
+
+      <div class="facts">
+        <span class="fact"><i></i>About 10 minutes</span>
+        <span class="fact"><i></i>Saved as you go</span>
+        <span class="fact"><i></i>Kept private</span>
+      </div>
+
+      <form id="intake-form" novalidate>
+        <input type="hidden" id="client_ref" name="client_ref" value="" />
+
+        <!-- ========== 01 · YOUR DETAILS ========== -->
+        <section data-block>
+          <div class="sec-head">
+            <span class="sec-num">01</span>
+            <div>
+              <h2>Your Details</h2>
+              <p>So I know who I am designing for, and how to reach you.</p>
+            </div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="name">Full name <span class="req">*</span></label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="field">
+              <label class="q" for="email">Email address <span class="req">*</span></label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="phone">WhatsApp / phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="+971 XX XXX XXXX" />
+            </div>
+            <div class="field">
+              <label class="q" for="contact_pref">How shall I reach you?</label>
+              <select id="contact_pref" name="contact_pref">
+                <option value="" disabled selected>Select one</option>
+                <option>WhatsApp</option>
+                <option>Email</option>
+                <option>Phone call</option>
+                <option>Video call</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="location">Where is the property?
+              <span class="hint">Community or area, for example Dubai Hills Estate or District One</span>
+            </label>
+            <input type="text" id="location" name="location" placeholder="Community, city" />
+          </div>
+        </section>
+
+        <!-- ========== 02 · YOUR HOME ========== -->
+        <section data-block>
+          <div class="sec-head">
+            <span class="sec-num">02</span>
+            <div>
+              <h2>Your Home</h2>
+              <p>The space itself, and the people who live in it.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q">What kind of property is it?</label>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="property_type" value="Apartment" /><span>Apartment</span></label>
+              <label class="choice"><input type="radio" name="property_type" value="Villa" /><span>Villa</span></label>
+              <label class="choice"><input type="radio" name="property_type" value="Townhouse" /><span>Townhouse</span></label>
+              <label class="choice"><input type="radio" name="property_type" value="Penthouse" /><span>Penthouse</span></label>
+              <label class="choice"><input type="radio" name="property_type" value="Other" /><span>Something else</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q">What stage is it at?</label>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="stage" value="Newly handed over, still empty" /><span>Newly handed over, still empty</span></label>
+              <label class="choice"><input type="radio" name="stage" value="Off-plan, handover to come" /><span>Off-plan, handover to come</span></label>
+              <label class="choice"><input type="radio" name="stage" value="Lived in, ready for a refresh" /><span>Lived in, ready for a refresh</span></label>
+              <label class="choice"><input type="radio" name="stage" value="Being renovated" /><span>Being renovated</span></label>
+            </div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="size">Size
+                <span class="hint">Bedrooms, and square feet if you know it</span>
+              </label>
+              <input type="text" id="size" name="size" placeholder="e.g. 2 bedroom, 1,300 sqft" />
+            </div>
+            <div class="field">
+              <label class="q" for="purpose">How will it be used?</label>
+              <select id="purpose" name="purpose">
+                <option value="" disabled selected>Select one</option>
+                <option>Our own home</option>
+                <option>Holiday home</option>
+                <option>Short-term rental or investment</option>
+                <option>Long-term rental</option>
+                <option>Not decided yet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="household">Who lives there?
+              <span class="hint">Adults, children and their ages, pets, guests who stay often</span>
+            </label>
+            <input type="text" id="household" name="household" placeholder="e.g. couple, two children aged 4 and 7, one dog" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="living">How do you actually live in the space?
+              <span class="hint">Working from home, hosting dinners, quiet mornings, children playing — the real daily rhythm</span>
+            </label>
+            <textarea id="living" name="living" placeholder="Describe a normal week at home."></textarea>
+          </div>
+        </section>
+
+        <!-- ========== 03 · THE PROJECT ========== -->
+        <section data-block>
+          <div class="sec-head">
+            <span class="sec-num">03</span>
+            <div>
+              <h2>The Project</h2>
+              <p>What we are taking on together, and what it needs to solve.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q">Which service are you thinking of?</label>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="service" value="Turnkey Design" /><span>Turnkey Design</span></label>
+              <label class="choice"><input type="radio" name="service" value="Interior Styling and Furnishing" /><span>Styling and Furnishing</span></label>
+              <label class="choice"><input type="radio" name="service" value="E-Design Consultation" /><span>E-Design Consultation</span></label>
+              <label class="choice"><input type="radio" name="service" value="Not sure yet" /><span>Not sure yet</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q">Which rooms are part of it?
+              <span class="hint">Choose as many as apply</span>
+            </label>
+            <div class="choices">
+              <label class="choice"><input type="checkbox" name="rooms" value="Whole home" /><span>Whole home</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Living room" /><span>Living room</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Dining area" /><span>Dining area</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Kitchen" /><span>Kitchen</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Master bedroom" /><span>Master bedroom</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Guest or children's bedrooms" /><span>Guest or children's bedrooms</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Bathrooms" /><span>Bathrooms</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Home office" /><span>Home office</span></label>
+              <label class="choice"><input type="checkbox" name="rooms" value="Balcony or terrace" /><span>Balcony or terrace</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="goal">When the project is finished, what should the space feel like? <span class="req">*</span>
+              <span class="hint">The one thing that would make you say it was worth it</span>
+            </label>
+            <textarea id="goal" name="goal" placeholder="Describe the feeling you are after, not only the furniture." required></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="problem">What is not working right now?
+              <span class="hint">Rooms you avoid, storage that is missing, light, layout, anything that frustrates you</span>
+            </label>
+            <textarea id="problem" name="problem" placeholder="Be as honest as you like."></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q">Is any building work involved?</label>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="building_work" value="No, furnishing and styling only" /><span>No, furnishing and styling only</span></label>
+              <label class="choice"><input type="radio" name="building_work" value="Light work: paint, joinery, lighting" /><span>Light work: paint, joinery, lighting</span></label>
+              <label class="choice"><input type="radio" name="building_work" value="Yes, a full renovation" /><span>Yes, a full renovation</span></label>
+              <label class="choice"><input type="radio" name="building_work" value="Not sure yet" /><span>Not sure yet</span></label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== 04 · STYLE AND FEELING ========== -->
+        <section data-block>
+          <div class="sec-head">
+            <span class="sec-num">04</span>
+            <div>
+              <h2>Style and Feeling</h2>
+              <p>Show me what you are drawn to, and what you would rather never see again.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q">Which words describe the home you want?
+              <span class="hint">Choose up to four</span>
+            </label>
+            <div class="choices">
+              <label class="choice"><input type="checkbox" name="mood" value="Calm and minimal" /><span>Calm and minimal</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Warm and layered" /><span>Warm and layered</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Japandi" /><span>Japandi</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Modern and refined" /><span>Modern and refined</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Classic and timeless" /><span>Classic and timeless</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Natural and organic" /><span>Natural and organic</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Soft and coastal" /><span>Soft and coastal</span></label>
+              <label class="choice"><input type="checkbox" name="mood" value="Bold and characterful" /><span>Bold and characterful</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="inspiration">Where can I see what you like? <span class="req">*</span>
+              <span class="hint">A Pinterest board, Instagram saves, or a few links. This tells me more than any other answer.</span>
+            </label>
+            <textarea id="inspiration" name="inspiration" placeholder="Paste links here, or describe the interiors you keep coming back to." required></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="colours">Colours you love
+              <span class="hint">And any you would never want in your home</span>
+            </label>
+            <input type="text" id="colours" name="colours" placeholder="e.g. warm neutrals and olive, never cold grey" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="materials">Materials and finishes you are drawn to
+              <span class="hint">Oak, travertine, linen, rattan, brushed brass, matte black, and so on</span>
+            </label>
+            <input type="text" id="materials" name="materials" placeholder="Whatever comes to mind" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="avoid">What do you definitely not want?
+              <span class="hint">Styles, colours, materials or ideas to keep out of the design</span>
+            </label>
+            <textarea id="avoid" name="avoid" placeholder="Just as useful as what you do want."></textarea>
+          </div>
+
+          <div class="field">
+            <label class="q" for="keep">Anything that has to stay?
+              <span class="hint">Furniture, art or pieces with meaning that the design should be built around</span>
+            </label>
+            <textarea id="keep" name="keep" placeholder="Describe the pieces, or say none."></textarea>
+          </div>
+        </section>
+
+        <!-- ========== 05 · PRACTICAL ========== -->
+        <section data-block>
+          <div class="sec-head">
+            <span class="sec-num">05</span>
+            <div>
+              <h2>Practical</h2>
+              <p>Budget and timing, so that what I propose is genuinely buildable.</p>
+            </div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="budget">Approximate budget (AED)
+                <span class="hint">An honest range helps more than an exact figure</span>
+              </label>
+              <select id="budget" name="budget">
+                <option value="" disabled selected>Select a range</option>
+                <option>Under AED 5,000</option>
+                <option>AED 5,000 - 15,000</option>
+                <option>AED 15,000 - 30,000</option>
+                <option>AED 30,000 - 60,000</option>
+                <option>AED 60,000 - 150,000</option>
+                <option>AED 150,000+</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="q" for="budget_scope">Does that budget include furniture?</label>
+              <select id="budget_scope" name="budget_scope">
+                <option value="" disabled selected>Select one</option>
+                <option>Yes, furniture and everything else</option>
+                <option>Design fee only, furniture comes on top</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="start">When would you like to start?</label>
+              <select id="start" name="start">
+                <option value="" disabled selected>Select one</option>
+                <option>As soon as possible</option>
+                <option>Within a month</option>
+                <option>In two to three months</option>
+                <option>Later this year</option>
+                <option>Still exploring</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="q" for="deadline">Is there a date it has to be ready by?
+                <span class="hint">A move-in date, guests arriving, a listing going live</span>
+              </label>
+              <input type="text" id="deadline" name="deadline" placeholder="Date, or none" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="plans">Do you have floor plans or photos of the space?
+              <span class="hint">Paste a Drive or WeTransfer link, or simply send them to me on WhatsApp afterwards</span>
+            </label>
+            <input type="text" id="plans" name="plans" placeholder="Link, or 'I will send them on WhatsApp'" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="decision">Who else is part of the decision?
+              <span class="hint">A partner, family, a contractor or developer already involved</span>
+            </label>
+            <input type="text" id="decision" name="decision" placeholder="Names and roles, or just you" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="found">How did you find me?</label>
+            <input type="text" id="found" name="found" placeholder="Instagram, a referral, Google" />
+          </div>
+
+          <div class="field">
+            <label class="q" for="extra">Anything else I should know?</label>
+            <textarea id="extra" name="extra" placeholder="The floor is yours."></textarea>
+          </div>
+        </section>
+
+        <div class="closing">
+          <p class="eyebrow">Almost there</p>
+          <h2>Ready to send</h2>
+          <p>
+            Your answers come straight to me. I read every one personally and will be in touch
+            within 48 hours to arrange your consultation.
+          </p>
+          <p class="warn" id="warn"></p>
+          <button type="submit" id="submit-btn">
+            <span class="btn-text">Send My Answers</span>
+            <span class="btn-loading" hidden>Sending...</span>
+          </button>
+          <div class="saved" id="saved"></div>
+          <p class="send-error" id="send-error" hidden></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="done" id="done-view" hidden>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2>Thank You,<br /><em>This Is a Real Start</em></h2>
+      <p>Your answers are with me. I will read them properly and be in touch within 48 hours to arrange your consultation.</p>
+      <p>If you have floor plans or photos of the space, send them over on WhatsApp whenever it suits you.</p>
+      <a class="back" href="/">Back to the site</a>
+    </div>
+
+    <footer>
+      Kristine Interiors · Dubai, UAE · <a href="mailto:info@kristineinteriors.com">info@kristineinteriors.com</a>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    var form      = document.getElementById('intake-form');
+    var blocks    = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+    var bar       = document.getElementById('bar');
+    var step      = document.getElementById('step');
+    var saved     = document.getElementById('saved');
+    var warn      = document.getElementById('warn');
+    var sendError = document.getElementById('send-error');
+    var submitBtn = document.getElementById('submit-btn');
+    var btnText   = submitBtn.querySelector('.btn-text');
+    var btnLoad   = submitBtn.querySelector('.btn-loading');
+
+    /* ── Personal link: /intake/anna-petrova or /intake?n=Anna%20Petrova ──
+       No database behind it. The link only decides who is greeted, and tells
+       Kristine which client the answers belong to. ── */
+    var clientName = (function () {
+      var fromQuery = new URLSearchParams(location.search).get('n');
+      var raw = fromQuery || location.pathname.replace(/^\/intake\/?/, '').split('/')[0];
+      raw = decodeURIComponent(raw || '').replace(/[-_+]+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!raw || raw.length > 60 || !/^[\p{L}\p{M}\s'.-]+$/u.test(raw)) return '';
+      return raw.replace(/\b\p{L}/gu, function (c) { return c.toUpperCase(); });
+    })();
+
+    if (clientName) {
+      var first = clientName.split(' ')[0];
+      document.getElementById('headline').innerHTML =
+        'Tell Me About<br /><em>Your Space, ' + first.replace(/[<>&]/g, '') + '</em>';
+      document.getElementById('client_ref').value = clientName;
+      document.title = clientName + ' · Project Questionnaire · Kristine Interiors';
+    }
+
+    var STORE_KEY = 'kristine-intake' + (clientName ? '-' + clientName.toLowerCase().replace(/\s+/g, '-') : '');
+
+    /* ── Progress ── */
+    function filled(block) {
+      return Array.prototype.slice.call(block.querySelectorAll('input, textarea, select')).some(function (el) {
+        if (el.type === 'radio' || el.type === 'checkbox') return el.checked;
+        return el.value.trim() !== '';
+      });
+    }
+    function updateProgress() {
+      var done = blocks.filter(filled).length;
+      bar.style.width = (100 * done / blocks.length) + '%';
+      step.textContent = done + ' of ' + blocks.length;
+      warn.textContent = done < blocks.length ? 'One section is still empty. Worth scrolling back?' : '';
+    }
+
+    /* ── Save on this device, so nothing is lost halfway ── */
+    function save() {
+      try {
+        var data = {};
+        new FormData(form).forEach(function (value, key) {
+          data[key] = data[key] ? data[key] + '||' + value : value;
+        });
+        localStorage.setItem(STORE_KEY, JSON.stringify(data));
+        saved.textContent = 'Saved on this device';
+      } catch (e) {}
+    }
+    function restore() {
+      try {
+        var data = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+        Object.keys(data).forEach(function (key) {
+          var values = String(data[key]).split('||');
+          form.querySelectorAll('[name="' + CSS.escape(key) + '"]').forEach(function (el) {
+            if (el.type === 'radio' || el.type === 'checkbox') el.checked = values.indexOf(el.value) !== -1;
+            else el.value = values[0];
+          });
+        });
+      } catch (e) {}
+    }
+
+    /* ── Validation ── */
+    function showError(input, message) {
+      clearError(input);
+      input.classList.add('error');
+      var err = document.createElement('span');
+      err.className = 'field-error';
+      err.textContent = message;
+      input.parentNode.appendChild(err);
+    }
+    function clearError(input) {
+      input.classList.remove('error');
+      var existing = input.parentNode.querySelector('.field-error');
+      if (existing) existing.remove();
+    }
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      sendError.hidden = true;
+
+      var required = [
+        [form.querySelector('#name'),        'Please enter your name.'],
+        [form.querySelector('#email'),       'Please enter your email address.'],
+        [form.querySelector('#goal'),        'A sentence or two is enough.'],
+        [form.querySelector('#inspiration'), 'Even one link helps me a great deal.']
+      ];
+      var valid = true;
+      var first = null;
+
+      required.forEach(function (pair) {
+        var input = pair[0];
+        clearError(input);
+        if (!input.value.trim()) {
+          showError(input, pair[1]);
+          valid = false;
+          if (!first) first = input;
+        }
+      });
+
+      var emailInput = form.querySelector('#email');
+      if (emailInput.value.trim() && !isValidEmail(emailInput.value.trim())) {
+        showError(emailInput, 'Please enter a valid email address.');
+        valid = false;
+        if (!first) first = emailInput;
+      }
+
+      if (!valid) {
+        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        first.focus({ preventScroll: true });
+        return;
+      }
+
+      submitBtn.disabled = true;
+      btnText.hidden = true;
+      btnLoad.hidden = false;
+
+      // Multiple answers to one question arrive as a single readable line
+      var answers = {};
+      new FormData(form).forEach(function (value, key) {
+        value = String(value).trim();
+        if (!value) return;
+        answers[key] = answers[key] ? answers[key] + ', ' + value : value;
+      });
+
+      fetch('/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answers)
+      })
+        .then(function (res) { return res.json().then(function (body) { return { ok: res.ok, body: body }; }); })
+        .then(function (result) {
+          if (!result.ok || !result.body.ok) throw new Error(result.body.error || 'Something went wrong.');
+          try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+          document.getElementById('intake-view').hidden = true;
+          document.getElementById('done-view').hidden = false;
+          bar.style.width = '100%';
+          step.textContent = 'Sent';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(function (err) {
+          submitBtn.disabled = false;
+          btnText.hidden = false;
+          btnLoad.hidden = true;
+          sendError.hidden = false;
+          sendError.textContent = err.message + ' You can also email your answers to info@kristineinteriors.com.';
+        });
+    });
+
+    restore();
+    updateProgress();
+    form.addEventListener('input',  function () { updateProgress(); save(); });
+    form.addEventListener('change', function () { updateProgress(); save(); });
+  })();
+  </script>
+</body>
+</html>
