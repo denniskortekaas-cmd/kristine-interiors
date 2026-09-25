@@ -1073,12 +1073,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     align-items: flex-start;
     gap: 0;
     box-shadow: var(--shadow-md);
-    transform: translateY(-120%);
-    transition: transform 0.35s ease;
+    /* The panel hangs from top: var(--nav-height), so shifting it by its own
+       height alone still leaves its bottom edge on screen as a cream line.
+       It has to travel its own height plus that offset, and visibility keeps
+       it gone even if the maths is ever off. */
+    transform: translateY(calc(-100% - var(--nav-height) - 8px));
+    transition: transform 0.35s ease, visibility 0s linear 0.35s;
+    visibility: hidden;
     pointer-events: none;
   }
 
-  .nav-links.open { transform: translateY(0); pointer-events: auto; }
+  .nav-links.open {
+    transform: translateY(0);
+    transition: transform 0.35s ease, visibility 0s;
+    visibility: visible;
+    pointer-events: auto;
+  }
   .nav-links li { width: 100%; border-bottom: 1px solid var(--cream-dark); }
   .nav-link { display: block; padding: 16px 0; color: var(--text-secondary); font-size: 15px; }
   .nav-link::after { display: none; }
@@ -1146,4 +1156,63 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* ============================================================
+   VIDEO HERO
+   The floor plan rises, the camera dives into the apartment and lands in
+   the living room. It plays once by itself and holds on the last frame.
+   The picture stays put the whole way: nothing is shifted or scaled, so
+   nothing stutters and the footage keeps its own sharpness.
+   Everything here is additive: without body.hero-video-on the hero is the
+   single screen with the photo it has always been.
+   ============================================================ */
+
+.hero-video {
+  position: absolute;
+  /* Deliberately 3px bigger than the hero on every side. A video sits in its
+     own compositing layer and its edge does not always land exactly on the
+     pixel grid, which leaves a hairline of page background along the top.
+     Overlapping the edges makes that impossible. */
+  top: -3px;
+  left: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.hero-video.ready { opacity: 1; }
+
+/* The photo stays underneath the whole time and the video simply covers it.
+   That way a video that fails, stalls or gets removed reveals the old hero by
+   itself, without depending on an error event firing. */
+body.hero-video-on .hero { background: var(--cream); transition: background 0.6s ease; }
+body.hero-video-on .hero-bg { transform: none; }
+
+/* the clip's own paper colour, so the letterboxing never shows as an edge */
+body.hero-video-on.hero-cream .hero { background: #EFEDE9; }
+
+/* The opening belongs to the drawing alone. The words arrive once the camera
+   is on its way in, and from then on it is the hero it has always been. */
+body.hero-video-on .hero-content,
+body.hero-video-on .hero-scroll-hint,
+body.hero-video-on .hero-overlay {
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+body.hero-video-on.hero-quiet .hero-content {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+body.hero-video-on.hero-quiet .hero-scroll-hint { opacity: 0; }
+body.hero-video-on.hero-quiet .hero-overlay { opacity: 0; }
+
+/* Dark logo and menu over the light opening, but no bar behind them: any
+   solid colour there shows as a strip against the video's own paper. */
+#navbar.scrolled.on-light { background: transparent; box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
 }

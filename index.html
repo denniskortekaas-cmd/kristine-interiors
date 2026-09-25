@@ -54,7 +54,22 @@
 
   <!-- ========== HERO ========== -->
   <section id="hero" class="hero">
+    <!-- The photo stays as the fallback: if the video never loads, this is
+         the hero exactly as it was before. -->
     <div class="hero-bg" style="background-image: url('images/park-horizon-2.JPG');"></div>
+    <!-- The script picks the landscape or the upright cut and sets the source,
+         so a phone never downloads the wide one. -->
+    <video
+      id="hero-video"
+      class="hero-video"
+      muted
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+      data-wide="video/hero.mp4"
+      data-tall="video/hero-portrait.mp4"
+    ></video>
     <div class="hero-overlay"></div>
     <div class="hero-content fade-in">
       <p class="hero-eyebrow">Interior Design · Dubai, UAE</p>

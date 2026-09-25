@@ -12,11 +12,14 @@
   const navbar = document.getElementById('navbar');
 
   function onScroll() {
-    if (window.scrollY > 80) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+    // hero-cream: the floor plan opening is light, so the logo and the menu
+    // need their dark state even before the usual 80px of scrolling. They do
+    // not need the solid bar behind them though: a cream strip over cream
+    // paper still reads as a band, so on-light keeps the bar see-through.
+    var onCream = document.body.classList.contains('hero-cream');
+    var pastTop = window.scrollY > 80;
+    navbar.classList.toggle('scrolled', pastTop || onCream);
+    navbar.classList.toggle('on-light', onCream && !pastTop);
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -398,5 +401,107 @@
       col.classList.toggle('open');
     });
   });
+
+
+
+  // ──────────────────────────────────────────────
+  // VIDEO HERO
+  // The floor plan rises, the camera dives into the apartment and lands in
+  // the living room. It plays once by itself and stops on the last frame,
+  // which is the room the hero photo always showed. If anything here does
+  // not hold up we never switch it on and the photo hero stays.
+  // ──────────────────────────────────────────────
+  (function () {
+    var video = document.getElementById('hero-video');
+    if (!video) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // A landscape clip on an upright screen is cropped so hard that the floor
+    // plan stops reading as a plan, so an upright screen gets its own cut.
+    var upright = window.innerHeight > window.innerWidth * 1.15;
+    var source = video.getAttribute(upright ? 'data-tall' : 'data-wide');
+    if (!source) return;
+
+    var LIGHT_UNTIL = 0.24;  // the picture is cream paper: the nav needs its solid state
+    var TEXT_FROM   = 0.45;  // the camera is on its way in: the words arrive
+    var cream = null;
+    var quiet = null;
+
+    function phase() {
+      var d = video.duration || 0;
+      var at = d ? video.currentTime / d : 0;
+
+      var isQuiet = at < TEXT_FROM;
+      if (isQuiet !== quiet) {
+        quiet = isQuiet;
+        document.body.classList.toggle('hero-quiet', isQuiet);
+      }
+
+      var isCream = d ? at < LIGHT_UNTIL : true;
+      if (isCream !== cream) {
+        cream = isCream;
+        document.body.classList.toggle('hero-cream', isCream);
+        onScroll(); // the navbar follows the same switch
+      }
+    }
+
+    function settle() {
+      document.body.classList.remove('hero-cream', 'hero-quiet');
+      cream = false;
+      quiet = false;
+      onScroll();
+    }
+
+    // If the video has not arrived within a few seconds it is not worth
+    // swapping the hero out any more, so we leave the photo alone.
+    var givenUp = false;
+    var deadline = setTimeout(function () {
+      if (!document.body.classList.contains('hero-video-on')) givenUp = true;
+    }, 4000);
+
+    video.addEventListener('timeupdate', phase);
+
+    video.addEventListener('loadeddata', function () {
+      if (!video.duration || givenUp) return;
+      clearTimeout(deadline);
+      document.body.classList.add('hero-video-on');
+      video.classList.add('ready');
+      cream = null;
+      quiet = null;
+      phase();
+
+      var playing = video.play();
+      if (playing && typeof playing.catch === 'function') {
+        playing.catch(function () {
+          // Autoplay refused: hold the last frame, which is her living room,
+          // rather than leaving a flat drawing and no words on screen.
+          video.currentTime = Math.max(0, video.duration - 0.05);
+          settle();
+        });
+      }
+    });
+
+    video.addEventListener('ended', settle);
+
+    // Hand the hero back to the photo, whatever went wrong. The photo is always
+    // there underneath, so this only has to put the words and the overlay back.
+    function release() {
+      document.body.classList.remove('hero-video-on', 'hero-cream', 'hero-quiet');
+      video.classList.remove('ready');
+      cream = null;
+      quiet = null;
+      onScroll();
+    }
+
+    ['error', 'abort'].forEach(function (name) {
+      video.addEventListener(name, release);
+    });
+
+    // Listeners first, then start loading the cut this screen needs
+    video.src = source;
+    video.preload = 'auto';
+    video.load();
+  })();
 
 })();
