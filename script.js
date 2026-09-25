@@ -424,14 +424,15 @@
     var poster = video.getAttribute(upright ? 'data-tall-poster' : 'data-wide-poster');
     if (!source) return;
 
-    var LIGHT_UNTIL = 0.24;  // the picture is cream paper: the nav needs its solid state
-    var TEXT_FROM   = 0.45;  // the camera is on its way in: the words arrive
+    // In seconds, not as a share of the running time: the two cuts have their
+    // own lengths, and these moments belong to the pictures, not to the clock.
+    var LIGHT_UNTIL = upright ? 2.30 : 2.00;  // until then it is cream paper
+    var TEXT_FROM   = upright ? 3.90 : 3.70;  // the camera is on its way in
     var cream = null;
     var quiet = null;
 
     function phase() {
-      var d = video.duration || 0;
-      var at = d ? video.currentTime / d : 0;
+      var at = video.currentTime || 0;
 
       var isQuiet = at < TEXT_FROM;
       if (isQuiet !== quiet) {
@@ -439,7 +440,7 @@
         document.body.classList.toggle('hero-quiet', isQuiet);
       }
 
-      var isCream = d ? at < LIGHT_UNTIL : true;
+      var isCream = at < LIGHT_UNTIL;
       if (isCream !== cream) {
         cream = isCream;
         document.body.classList.toggle('hero-cream', isCream);
