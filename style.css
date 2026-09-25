@@ -1191,6 +1191,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 body.hero-video-on .hero { background: var(--cream); transition: background 0.6s ease; }
 body.hero-video-on .hero-bg { transform: none; }
 
+/* While the film is on its way, the photo has to stay out of sight: it shows
+   the room the film ends on, and seeing the ending first gives the whole thing
+   away. If the film never arrives, release() drops this class and the photo
+   comes straight back. */
+body.hero-waiting .hero-bg { opacity: 0; }
+
 /* the clip's own paper colour, so the letterboxing never shows as an edge */
 body.hero-video-on.hero-cream .hero { background: #EFEDE9; }
 

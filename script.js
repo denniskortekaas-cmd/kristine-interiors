@@ -421,6 +421,7 @@
     // plan stops reading as a plan, so an upright screen gets its own cut.
     var upright = window.innerHeight > window.innerWidth * 1.15;
     var source = video.getAttribute(upright ? 'data-tall' : 'data-wide');
+    var poster = video.getAttribute(upright ? 'data-tall-poster' : 'data-wide-poster');
     if (!source) return;
 
     var LIGHT_UNTIL = 0.24;  // the picture is cream paper: the nav needs its solid state
@@ -457,7 +458,9 @@
     // swapping the hero out any more, so we leave the photo alone.
     var givenUp = false;
     var deadline = setTimeout(function () {
-      if (!document.body.classList.contains('hero-video-on')) givenUp = true;
+      if (video.readyState >= 2) return;   // al bruikbaar, laat maar lopen
+      givenUp = true;
+      release();                            // foto terug, woorden terug
     }, 4000);
 
     video.addEventListener('timeupdate', phase);
@@ -465,10 +468,7 @@
     video.addEventListener('loadeddata', function () {
       if (!video.duration || givenUp) return;
       clearTimeout(deadline);
-      document.body.classList.add('hero-video-on');
-      video.classList.add('ready');
-      cream = null;
-      quiet = null;
+      clearTimeout(window.__heroRelease);   // the inline safety catch can stand down
       phase();
 
       var playing = video.play();
@@ -487,7 +487,8 @@
     // Hand the hero back to the photo, whatever went wrong. The photo is always
     // there underneath, so this only has to put the words and the overlay back.
     function release() {
-      document.body.classList.remove('hero-video-on', 'hero-cream', 'hero-quiet');
+      clearTimeout(window.__heroRelease);
+      document.body.classList.remove('hero-video-on', 'hero-waiting', 'hero-cream', 'hero-quiet');
       video.classList.remove('ready');
       cream = null;
       quiet = null;
@@ -498,7 +499,20 @@
       video.addEventListener(name, release);
     });
 
-    // Listeners first, then start loading the cut this screen needs
+    // Claim the hero before anything is downloaded. Without this the photo
+    // underneath is on screen for a moment, so you would see the room the film
+    // ends on before the film has begun. The poster is the film's own first
+    // frame, so the first thing painted is already the drawing.
+    // The inline script at the top of the page already put these on, so that
+    // the photo never flashes. This keeps them on for the browsers that
+    // skipped it, and matches the bookkeeping either way.
+    document.body.classList.add('hero-video-on', 'hero-waiting', 'hero-cream', 'hero-quiet');
+    cream = true;
+    quiet = true;
+    onScroll();
+
+    if (poster) video.poster = poster;
+    video.classList.add('ready');
     video.src = source;
     video.preload = 'auto';
     video.load();

@@ -30,6 +30,24 @@
 </head>
 <body>
 
+  <!-- Runs before the hero is drawn. script.js does the same thing, but it
+       only loads at the end of the page, and by then the photo has already
+       been on screen for a moment: you would see the room the film ends on
+       before the film has begun. The timer is the safety catch, in case
+       script.js never arrives. -->
+  <script>
+    (function () {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.body.className += ' hero-video-on hero-waiting hero-cream hero-quiet';
+        window.__heroRelease = setTimeout(function () {
+          document.body.className = document.body.className
+            .replace(/ hero-(video-on|waiting|cream|quiet)/g, '');
+        }, 6000);
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- ========== NAVIGATION ========== -->
   <nav id="navbar">
     <div class="nav-inner">
@@ -69,6 +87,8 @@
       tabindex="-1"
       data-wide="video/hero.mp4"
       data-tall="video/hero-portrait.mp4"
+      data-wide-poster="video/hero-poster.jpg"
+      data-tall-poster="video/hero-portrait-poster.jpg"
     ></video>
     <div class="hero-overlay"></div>
     <div class="hero-content fade-in">
