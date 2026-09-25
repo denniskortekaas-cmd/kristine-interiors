@@ -484,6 +484,33 @@
 
     video.addEventListener('ended', settle);
 
+    // The film is a one-off on arrival. A phone pauses it the moment you leave
+    // the tab, so coming back would otherwise drop you on a frozen frame with
+    // no words on it. Whenever that happens we jump straight to the end: the
+    // room, with the headline over it, which is where the film was heading.
+    function finish() {
+      if (!video.duration || video.ended) return;
+      try {
+        video.pause();
+        video.currentTime = Math.max(0, video.duration - 0.05);
+      } catch (e) {}
+      settle();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') finish();
+    });
+
+    // Coming back through the back button restores the page as it was parked
+    window.addEventListener('pageshow', function (e) { if (e.persisted) finish(); });
+
+    // And if playback stops on its own, without any event to tell us
+    var watchdog = setInterval(function () {
+      if (!document.body.classList.contains('hero-video-on')) { clearInterval(watchdog); return; }
+      if (video.ended || !video.duration) { clearInterval(watchdog); return; }
+      if (video.paused && video.currentTime > 0) { clearInterval(watchdog); finish(); }
+    }, 1200);
+
     // Hand the hero back to the photo, whatever went wrong. The photo is always
     // there underneath, so this only has to put the words and the overlay back.
     function release() {
