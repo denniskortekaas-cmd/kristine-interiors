@@ -545,4 +545,161 @@
     video.load();
   })();
 
+
+  // ──────────────────────────────────────────────
+  // PAPER PLANE
+  // A dashed trail down the page with the plane on the head of it. The route
+  // is worked out from where the sections actually sit, so it keeps its shape
+  // when the content, the window or the font changes.
+  // ──────────────────────────────────────────────
+  (function () {
+    var svg    = document.getElementById('flight');
+    var above  = document.getElementById('flight-above');
+    var trail  = document.getElementById('flight-trail');
+    var reveal = document.getElementById('flight-reveal');
+    var plane  = document.getElementById('flight-plane');
+    if (!svg || !above || !trail || !reveal || !plane) return;
+
+    var stil = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var PLANE_CX = 19.75, PLANE_CY = 14;   // the middle of the drawing
+    var PLANE_SCALE = 1.7;
+    var total = 0, top = 0, bottom = 0, ticking = false;
+
+    // A curve through the points rather than a run of straight lines
+    function curveThrough(pts) {
+      if (pts.length < 2) return '';
+      var d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+      for (var i = 0; i < pts.length - 1; i++) {
+        var p0 = pts[i - 1] || pts[i];
+        var p1 = pts[i];
+        var p2 = pts[i + 1];
+        var p3 = pts[i + 2] || p2;
+        var c1x = p1.x + (p2.x - p0.x) / 6;
+        var c1y = p1.y + (p2.y - p0.y) / 6;
+        var c2x = p2.x - (p3.x - p1.x) / 6;
+        var c2y = p2.y - (p3.y - p1.y) / 6;
+        d += 'C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ',' +
+                   c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ',' +
+                   p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+      }
+      return d;
+    }
+
+    function build() {
+      var hero = document.querySelector('.hero');
+      var stops = ['services', 'portfolio', 'about', 'testimonial', 'contact']
+        .map(function (id) { return document.getElementById(id); })
+        .filter(Boolean);
+      if (!hero || !stops.length) return false;
+
+      var W = document.documentElement.clientWidth;
+      var pageY = window.scrollY || window.pageYOffset;
+      var box = function (el) {
+        var r = el.getBoundingClientRect();
+        return { top: r.top + pageY, bottom: r.bottom + pageY, mid: r.top + pageY + r.height / 2 };
+      };
+
+      // A narrow screen has no room for a wide sweep, or the line would run
+      // straight through the words every time.
+      var far  = W < 700 ? 0.86 : 0.94;
+      var near = W < 700 ? 0.14 : 0.06;
+
+      var heroBox = box(hero);
+      var pts = [{ x: W * 0.5, y: heroBox.bottom - 10 }];
+      stops.forEach(function (section, i) {
+        var b = box(section);
+        var side = (i % 2 === 0) ? far : near;
+        // one turn per section, with a gentler point on the way in
+        pts.push({ x: W * (0.5 + (side - 0.5) * 0.45), y: b.top + (b.bottom - b.top) * 0.22 });
+        pts.push({ x: W * side, y: b.mid });
+      });
+      var last = box(stops[stops.length - 1]);
+      pts.push({ x: W * 0.5, y: last.bottom - 40 });
+
+      var d = curveThrough(pts);
+      trail.setAttribute('d', d);
+      reveal.setAttribute('d', d);
+
+      var height = pts[pts.length - 1].y + 60;
+      [svg, above].forEach(function (el) {
+        el.setAttribute('width', W);
+        el.setAttribute('height', height);
+        el.setAttribute('viewBox', '0 0 ' + W + ' ' + height);
+      });
+
+      total = trail.getTotalLength();
+      top = pts[0].y;
+      bottom = pts[pts.length - 1].y;
+      reveal.style.strokeDasharray = total;
+      return true;
+    }
+
+    // The route is longer than the page is tall, and it stretches most where it
+    // swings sideways. Going by distance travelled would let the plane sink
+    // below the fold in every bend, so we look for the place on the route that
+    // sits at the height we want and use that.
+    function lengthAtHeight(y) {
+      var lo = 0, hi = total;
+      for (var i = 0; i < 18; i++) {
+        var mid = (lo + hi) / 2;
+        if (trail.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+      }
+      return (lo + hi) / 2;
+    }
+
+    function draw(y) {
+      if (y <= top) {
+        reveal.style.strokeDashoffset = total;
+        plane.style.opacity = 0;
+        return;
+      }
+      plane.style.opacity = 1;
+
+      var at = (y >= bottom) ? total : lengthAtHeight(y);
+      reveal.style.strokeDashoffset = total - at;
+
+      var pt = trail.getPointAtLength(at);
+      var before = trail.getPointAtLength(Math.max(0, at - 2));
+      var angle = Math.atan2(pt.y - before.y, pt.x - before.x) * 180 / Math.PI;
+      plane.setAttribute('transform',
+        'translate(' + pt.x.toFixed(1) + ',' + pt.y.toFixed(1) + ') ' +
+        'rotate(' + angle.toFixed(1) + ') ' +
+        'scale(' + PLANE_SCALE + ') ' +
+        'translate(' + (-PLANE_CX) + ',' + (-PLANE_CY) + ')');
+    }
+
+    function update() {
+      ticking = false;
+      if (!total || bottom <= top) return;
+      // the plane rides a little above the bottom of the window
+      draw((window.scrollY || window.pageYOffset) + window.innerHeight * 0.78);
+    }
+
+    function queue() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+
+    function start() {
+      if (!build()) return;
+      svg.classList.add('ready');
+      above.classList.add('ready');
+      if (stil) { draw(bottom); return; }   // no movement: the whole route, plane parked
+      update();
+    }
+
+    start();
+    if (!stil) window.addEventListener('scroll', queue, { passive: true });
+
+    var again;
+    function rebuild() {
+      clearTimeout(again);
+      again = setTimeout(function () { if (build()) (stil ? draw(bottom) : update()); }, 150);
+    }
+    window.addEventListener('resize', rebuild);
+    window.addEventListener('load', rebuild);      // images settle the page height
+    if (window.ResizeObserver) new ResizeObserver(rebuild).observe(document.body);
+  })();
+
 })();

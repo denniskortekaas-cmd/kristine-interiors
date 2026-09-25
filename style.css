@@ -1222,3 +1222,71 @@ body.hero-video-on.hero-quiet .hero-overlay { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .hero-video { display: none; }
 }
+
+/* ============================================================
+   PAPER PLANE
+   A dashed trail that draws itself as you scroll down the page,
+   with the plane riding on the head of it. Additive: remove this
+   block and the script's module and nothing else changes.
+   ============================================================ */
+
+.flight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.flight.ready { opacity: 1; }
+.flight-top { z-index: 5; }
+
+#flight-trail {
+  stroke: var(--gold);
+  stroke-width: 2;
+  stroke-dasharray: 7 11;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+/* The content sits above the trail, block by block. A card or a photo hides
+   the line and it comes out the other side; text prints over it; the space
+   between blocks still shows it. Naming the blocks rather than the whole
+   container, because raising the container did not hold up on a phone. */
+.section-header,
+.service-card,
+.project-card,
+.about-img-wrap,
+.about-text,
+.testimonial-inner,
+.contact-left,
+.contact-form-wrap,
+.footer > .container {
+  position: relative;
+  z-index: 4;
+}
+
+#flight-plane {
+  fill: none;
+  stroke: var(--gold-dark);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Nothing should move for someone who asked for stillness: the trail is
+   simply there in full, with the plane parked at the end of it. */
+/* On a phone a card is as wide as the screen, so slipping behind the content
+   would hide the plane almost the whole way down. There it flies over the top
+   instead, drawn back a little so it stays a detail. */
+@media (max-width: 899px) {
+  .flight { z-index: 5; }
+  #flight-trail { opacity: 0.4; }
+  #flight-plane { stroke: var(--gold); stroke-width: 1.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flight { transition: none; }
+}

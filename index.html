@@ -48,6 +48,27 @@
     })();
   </script>
 
+  <!-- The paper plane and the trail it leaves. Sized and shaped by script.js
+       from where the sections actually are, so it keeps up with the content. -->
+  <svg class="flight" id="flight" aria-hidden="true" focusable="false">
+    <defs>
+      <mask id="flight-mask" maskUnits="userSpaceOnUse">
+        <path id="flight-reveal" fill="none" stroke="#fff" stroke-width="60"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </mask>
+    </defs>
+    <path id="flight-trail" fill="none" mask="url(#flight-mask)" />
+  </svg>
+
+  <!-- The plane rides in its own layer above the content, so it stays in sight
+       even where the trail slips behind a card. -->
+  <svg class="flight flight-top" id="flight-above" aria-hidden="true" focusable="false">
+    <g id="flight-plane">
+      <path d="M1.5 9.2 L38 1 L23.5 27 L17.8 15.6 Z" />
+      <path d="M1.5 9.2 L17.8 15.6 L38 1" />
+    </g>
+  </svg>
+
   <!-- ========== NAVIGATION ========== -->
   <nav id="navbar">
     <div class="nav-inner">
