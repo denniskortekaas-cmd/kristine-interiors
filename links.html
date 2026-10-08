@@ -40,7 +40,8 @@
 
     label.q { display:block; font-size:15px; font-weight:500; margin-bottom:8px; }
     .hint { display:block; font-size:13px; font-weight:400; color:var(--text-secondary); margin-top:2px; }
-    input[type=text] {
+    input[type=text],
+    input[type=email] {
       width:100%; padding:15px 17px; font-family:inherit; font-size:17px; color:var(--text-primary);
       background:var(--cream); border:1px solid var(--line); border-radius:var(--radius);
       transition:border-color .2s, box-shadow .2s;
@@ -83,6 +84,10 @@
     }
     .action:hover { border-color:var(--gold); color:var(--gold-dark); }
     .action[aria-disabled=true] { opacity:0.45; pointer-events:none; }
+
+    .sent { margin-top: 14px; font-size: 14px; line-height: 1.6; }
+    .sent.ok { color: var(--brown-mid); }
+    .sent.fout { color: #B4462F; }
 
     .recent h2 { font-family:var(--font-serif); font-size:20px; font-weight:500; margin-bottom:4px; }
     .recent p.sub { color:var(--text-secondary); font-size:14px; margin-bottom:18px; }
@@ -150,6 +155,11 @@
       </label>
       <input type="text" id="client" placeholder="Anna Petrova" autocomplete="off" autofocus />
 
+      <label class="q" for="client-email" style="margin-top:22px">Her e-mail address
+        <span class="hint">Only needed if you want to send the link from here. Leave it empty and you can still copy it.</span>
+      </label>
+      <input type="email" id="client-email" placeholder="anna@example.com" autocomplete="off" />
+
       <div class="preview">
         <p class="preview-label">She will see</p>
         <p class="greeting muted" id="greeting">Tell Me About Your Space</p>
@@ -163,10 +173,12 @@
         <p class="preview-label" style="margin-top:22px">Message to send</p>
         <div class="message-box" id="message"></div>
         <div class="actions">
+          <span class="action" id="send-email" aria-disabled="true">Send by e-mail</span>
           <a class="action" id="send-whatsapp" aria-disabled="true" target="_blank" rel="noopener">Send on WhatsApp</a>
           <span class="action" id="copy-message" aria-disabled="true">Copy message</span>
           <a class="action" id="open-link" aria-disabled="true" target="_blank" rel="noopener">Preview it</a>
         </div>
+        <p class="sent" id="sent-note" hidden></p>
       </div>
     </div>
 
@@ -202,6 +214,9 @@
     var waBtn     = document.getElementById('send-whatsapp');
     var copyMsg   = document.getElementById('copy-message');
     var openBtn   = document.getElementById('open-link');
+    var mailInput = document.getElementById('client-email');
+    var mailBtn   = document.getElementById('send-email');
+    var sentNote  = document.getElementById('sent-note');
     var recentEl  = document.getElementById('recent');
     var emptyNote = document.getElementById('recent-empty');
     var undoBar   = document.getElementById('undo');
@@ -255,7 +270,7 @@
         message.textContent = '';
         waBtn.removeAttribute('href');
         openBtn.removeAttribute('href');
-        [waBtn, copyMsg, openBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
+        [waBtn, copyMsg, openBtn, mailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
         current = { name: '', url: '', text: '' };
         return;
       }
@@ -278,7 +293,7 @@
       message.textContent = text;
       waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(text);
       openBtn.href = url;
-      [waBtn, copyMsg, openBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
+      [waBtn, copyMsg, openBtn, mailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
       current = { name: name, url: url, text: text };
     }
 
@@ -422,6 +437,48 @@
       if (!confirm('Remove all ' + count + ' links from this list? The links themselves keep working.')) return;
       save([]);
       hideUndo();
+    });
+
+    /* Sending runs on the server, which is where the Resend key lives. It only
+       gets the name, the address and the link; the message itself is written
+       there, so nothing typed here can end up in someone's inbox. */
+    function melding(tekst, soort) {
+      sentNote.hidden = false;
+      sentNote.textContent = tekst;
+      sentNote.className = 'sent ' + soort;
+    }
+
+    mailBtn.addEventListener('click', function () {
+      if (mailBtn.getAttribute('aria-disabled') === 'true') return;
+      var adres = mailInput.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adres)) {
+        melding('Vul eerst een geldig e-mailadres in.', 'fout');
+        mailInput.focus();
+        return;
+      }
+      mailBtn.setAttribute('aria-disabled', 'true');
+      mailBtn.textContent = 'Sending…';
+      melding('', 'ok');
+      sentNote.hidden = true;
+
+      fetch('/links/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: current.name, email: adres, url: current.url })
+      })
+        .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+        .then(function (res) {
+          if (!res.ok || !res.body.ok) throw new Error(res.body.error || 'Something went wrong.');
+          melding('Sent to ' + adres + '. The reply goes to Kristine.', 'ok');
+          remember(current);
+          mailBtn.textContent = 'Send by e-mail';
+          mailBtn.setAttribute('aria-disabled', 'false');
+        })
+        .catch(function (err) {
+          melding(err.message, 'fout');
+          mailBtn.textContent = 'Send by e-mail';
+          mailBtn.setAttribute('aria-disabled', 'false');
+        });
     });
 
     input.addEventListener('input', render);
