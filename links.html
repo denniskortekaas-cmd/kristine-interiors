@@ -163,16 +163,16 @@
       </label>
       <input type="text" id="client" placeholder="Anna Petrova" autocomplete="off" autofocus />
 
-      <label class="q" for="client-email" style="margin-top:22px">Her e-mail address
-        <span class="hint">Used to address the Gmail window. Leave it empty and you can still copy the link.</span>
+      <label class="q" for="client-email" style="margin-top:22px">Their e-mail address
+        <span class="hint">Where the invitation is sent. Leave it empty and you can still copy the link.</span>
       </label>
       <input type="email" id="client-email" placeholder="anna@example.com" autocomplete="off" />
 
       <div class="preview">
-        <p class="preview-label">She will see</p>
+        <p class="preview-label">They will see</p>
         <p class="greeting muted" id="greeting">Tell Me About Your Space</p>
 
-        <p class="preview-label" style="margin-top:22px">Her link</p>
+        <p class="preview-label" style="margin-top:22px">Their link</p>
         <div class="link-row">
           <div class="link-box empty" id="link">Type a name above</div>
           <button class="copy" id="copy-link" disabled>Copy</button>
@@ -181,8 +181,7 @@
         <p class="preview-label" style="margin-top:22px">Message to send</p>
         <div class="message-box" id="message"></div>
         <div class="actions">
-          <span class="action action-sterk" id="send-mail" aria-disabled="true">Send the invitation</span>
-          <a class="action" id="send-gmail" aria-disabled="true" target="_blank" rel="noopener">Open in Gmail instead</a>
+          <span class="action action-sterk" id="send-mail" aria-disabled="true">Send via e-mail</span>
           <a class="action" id="send-whatsapp" aria-disabled="true" target="_blank" rel="noopener">Send on WhatsApp</a>
           <span class="action" id="copy-message" aria-disabled="true">Copy message</span>
           <a class="action" id="open-link" aria-disabled="true" target="_blank" rel="noopener">Preview it</a>
@@ -225,7 +224,6 @@
     var openBtn   = document.getElementById('open-link');
     var mailInput = document.getElementById('client-email');
     var sendBtn   = document.getElementById('send-mail');
-    var gmailBtn  = document.getElementById('send-gmail');
     var sentNote  = document.getElementById('sent-note');
     var recentEl  = document.getElementById('recent');
     var emptyNote = document.getElementById('recent-empty');
@@ -272,7 +270,7 @@
       if (!name) {
         greeting.className = 'greeting muted';
         greeting.textContent = typed
-          ? 'That does not look like a name, so she would see the questionnaire without a greeting.'
+          ? 'That does not look like a name, so they would see the questionnaire without a greeting.'
           : 'Tell Me About Your Space';
         linkBox.className = 'link-box empty';
         linkBox.textContent = typed ? location.origin + '/intake' : 'Type a name above';
@@ -280,7 +278,7 @@
         message.textContent = '';
         waBtn.removeAttribute('href');
         openBtn.removeAttribute('href');
-        [waBtn, copyMsg, openBtn, gmailBtn, sendBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
+        [waBtn, copyMsg, openBtn, sendBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
         current = { name: '', url: '', text: '' };
         return;
       }
@@ -303,7 +301,7 @@
       message.textContent = text;
       waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(text);
       openBtn.href = url;
-      [waBtn, copyMsg, openBtn, gmailBtn, sendBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
+      [waBtn, copyMsg, openBtn, sendBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
       current = { name: name, url: url, text: text };
     }
 
@@ -449,9 +447,8 @@
       hideUndo();
     });
 
-    /* Nothing is sent from here. The buttons hand the finished message to her
-       own mailbox, so it leaves from her address and the reply comes back to
-       her, not to a robot. */
+    /* The invitation goes out from the server, from Kristine's own domain,
+       with the reply pointed at her inbox. */
     function melding(tekst, soort) {
       sentNote.hidden = false;
       sentNote.textContent = tekst;
@@ -498,22 +495,7 @@
       return { naar: a, onderwerp: b.onderwerp, tekst: b.tekst };
     }
 
-    gmailBtn.addEventListener('click', function (e) {
-      var o = opstellen();
-      if (!o) { e.preventDefault(); return; }
-      // Compose links carry plain text only, and she works from her phone,
-      // where pasting a laid-out version is no use. So the message goes in
-      // the link itself and the window opens ready to send.
-      gmailBtn.href = 'https://mail.google.com/mail/?view=cm&fs=1'
-        + '&to=' + encodeURIComponent(o.naar)
-        + '&su=' + encodeURIComponent(o.onderwerp)
-        + '&body=' + encodeURIComponent(o.tekst);
-      melding('Gmail is opening with the message in it.', 'ok');
-      remember(current);
-    });
-
-    /* The laid-out letter goes out from the server, from her own domain, with
-       the reply pointed at her Gmail. One tap, which is what a phone needs. */
+    /* One tap, which is what it has to be: this gets used from a phone. */
     sendBtn.addEventListener('click', function () {
       if (sendBtn.getAttribute('aria-disabled') === 'true') return;
       var o = opstellen();
@@ -531,12 +513,12 @@
         .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
         .then(function (res) {
           if (!res.ok || !res.body.ok) throw new Error(res.body.error || 'Something went wrong.');
-          melding('Sent to ' + o.naar + '. Her reply comes to your Gmail.', 'ok');
+          melding('Sent to ' + o.naar + '. Their reply comes to your inbox.', 'ok');
           remember(current);
         })
         .catch(function (err) { melding(err.message, 'fout'); })
         .then(function () {
-          sendBtn.textContent = 'Send the invitation';
+          sendBtn.textContent = 'Send via e-mail';
           sendBtn.setAttribute('aria-disabled', 'false');
         });
     });
