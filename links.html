@@ -100,20 +100,37 @@
     .recent h2 { font-family:var(--font-serif); font-size:20px; font-weight:500; margin-bottom:4px; }
     .recent p.sub { color:var(--text-secondary); font-size:14px; margin-bottom:18px; }
     ul.list { list-style:none; }
-    ul.list li { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--cream-dark); }
+    ul.list li { display:flex; align-items:center; gap:18px; padding:12px 0; border-bottom:1px solid var(--cream-dark); }
     ul.list li:last-child { border-bottom:none; }
     ul.list .who { font-weight:500; }
     ul.list .when { color:var(--text-secondary); font-size:13px; }
     ul.list .spacer { flex:1; }
-    ul.list a.open { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-dark); border-bottom:1px solid var(--gold); padding-bottom:2px; }
-    button.mini {
-      border:none; background:none; font-family:inherit; font-size:11px; letter-spacing:0.14em;
-      text-transform:uppercase; color:var(--gold-dark); cursor:pointer; border-bottom:1px solid var(--gold); padding:0 0 2px;
+    /* Three underlined words in a row read as clutter, so the line only
+       appears under the one being pointed at. */
+    button.mini,
+    ul.list a.open {
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    button.mini:hover,
+    ul.list a.open:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
     }
     .empty-note { color:var(--text-secondary); font-size:14px; }
 
-    button.mini.remove { color:var(--text-secondary); border-bottom-color:var(--line); }
-    button.mini.remove:hover { color:#B4462F; border-bottom-color:#B4462F; }
+    button.mini.remove { color: var(--text-secondary); }
+    button.mini.remove:hover { color: #B4462F; }
 
     .undo {
       display:flex; align-items:center; gap:12px; margin-top:16px; padding:12px 16px;
