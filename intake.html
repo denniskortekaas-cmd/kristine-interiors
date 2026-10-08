@@ -126,13 +126,23 @@
     /* ── Fields ── */
     .field { margin-bottom: 24px; }
     .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* One side of a pair often carries a line of explanation and the other
+       does not, which left the two inputs sitting at different heights. The
+       labels keep their own height and the inputs drop to the bottom of the
+       cell, so they line up whatever is written above them. */
+    .pair .field { display: flex; flex-direction: column; }
+    .pair .field input,
+    .pair .field select,
+    .pair .field textarea { margin-top: auto; }
     label.q { display: block; font-size: 15px; font-weight: 500; margin-bottom: 8px; }
     .hint { display: block; font-size: 13px; font-weight: 400; color: var(--text-secondary); margin-top: 2px; }
     .req { color: var(--gold-dark); }
 
     input[type=text], input[type=email], input[type=tel], textarea, select {
       width: 100%; padding: 13px 16px;
-      font-family: inherit; font-size: 15px; color: var(--text-primary);
+      /* spelled out, or a select comes out 2px shorter than an input beside it */
+      font-family: inherit; font-size: 15px; line-height: 1.4; color: var(--text-primary);
       background: var(--cream); border: 1px solid var(--line);
       border-radius: var(--radius); transition: border-color 0.2s, box-shadow 0.2s;
     }
