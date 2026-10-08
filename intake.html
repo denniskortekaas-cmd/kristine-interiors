@@ -217,6 +217,11 @@
     footer a { color: var(--gold-dark); }
 
     @media (max-width: 680px) {
+      /* iPhones zoom in on any field smaller than 16px the moment it is
+         tapped, and the zoomed page then slides left and right. 16px stops
+         that; it is the whole reason this rule exists. */
+      input[type=text], input[type=email], input[type=tel], textarea, select { font-size: 16px; }
+
       .wrap { padding: 36px 18px 64px; }
       section { padding: 24px 20px 6px; }
       .closing { padding: 28px 22px; }
