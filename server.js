@@ -57,6 +57,11 @@ if (!apiKey) {
 
 const resend = new Resend(apiKey);
 
+// Her own domain, verified with Resend. Everything the site sends leaves from
+// here; replies go to her Gmail, because this address has no mailbox of its own.
+const FROM_ADDRESS = 'Kristine Interiors <hello@kristineinteriors.com>';
+const REPLY_TO = 'kristine.interiors.uae@gmail.com';
+
 // ── HTML escape helper ────────────────────────────────────────────────────────
 function esc(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -168,7 +173,7 @@ app.post('/submit', submitLimiter, async function (req, res) {
     console.log('Sending email via Resend for:', name, email);
 
     const { data, error } = await resend.emails.send({
-      from:     'Kristine Interiors <onboarding@resend.dev>',
+      from:     FROM_ADDRESS,
       to:       'kristine.interiors.uae@gmail.com',
       reply_to: email,
       subject:  `New enquiry from ${name}`,
@@ -331,7 +336,7 @@ app.post('/intake', intakeLimiter, async function (req, res) {
     console.log('Sending intake email via Resend for:', name, email);
 
     const { data, error } = await resend.emails.send({
-      from:     'Kristine Interiors <onboarding@resend.dev>',
+      from:     FROM_ADDRESS,
       to:       'kristine.interiors.uae@gmail.com',
       reply_to: email,
       subject:  clientRef
@@ -351,6 +356,120 @@ app.post('/intake', intakeLimiter, async function (req, res) {
 
   } catch (err) {
     console.error('Unexpected error in /intake:', err.message || err);
+    return res.status(500).json({ ok: false, error: 'Something went wrong, please try again.' });
+  }
+});
+
+// ── Send a client their questionnaire link ───────────────────────────────────
+// The link maker posts here. It hands over a name, an address and the link and
+// nothing else: the letter is written below, so the page cannot be used to put
+// arbitrary text in someone's inbox, and the link has to be one of ours.
+const linkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: function (req, res) {
+    res.status(429).json({ ok: false, error: 'Too many for now, try again in a quarter of an hour.' });
+  },
+});
+
+app.post('/links/send', linkLimiter, async function (req, res) {
+  try {
+    const body = req.body || {};
+    const name = String(body.name || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 60);
+    const email = String(body.email || '').trim();
+    const url = String(body.url || '').trim();
+
+    if (!name) return res.status(400).json({ ok: false, error: 'No name to greet her by.' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+      return res.status(400).json({ ok: false, error: 'That e-mail address does not look right.' });
+    }
+
+    let link;
+    try { link = new URL(url); } catch (e) { return res.status(400).json({ ok: false, error: 'That link is not one of ours.' }); }
+    const siteOk = /(^|\.)kristineinteriors\.com$/.test(link.hostname)
+                || /\.up\.railway\.app$/.test(link.hostname)
+                || link.hostname === 'localhost';
+    if (!siteOk || !link.pathname.startsWith('/intake')) {
+      return res.status(400).json({ ok: false, error: 'That link is not one of ours.' });
+    }
+
+    const first = esc(name.split(' ')[0]);
+    const safeLink = esc(link.href);
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head>
+<body style="margin:0;padding:32px 0;background:#F0EAE0;font-family:Georgia,'Times New Roman',serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0EAE0;">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:560px;max-width:92%;background:#FFFFFF;border-radius:4px;overflow:hidden;box-shadow:0 2px 18px rgba(44,26,14,0.10);">
+
+        <tr><td style="background:#2C1A0E;padding:34px 40px;">
+          <div style="font-family:Georgia,serif;font-size:21px;color:#C9A96E;letter-spacing:0.06em;">Kristine Interiors</div>
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.18em;text-transform:uppercase;margin-top:6px;">Interior Design &middot; Dubai</div>
+        </td></tr>
+
+        <tr><td style="padding:38px 40px 10px;">
+          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#2C1A0E;">Hi ${first},</p>
+          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#3A2A1A;">Lovely speaking with you. Before we meet, I would love to hear a little about your space. These questions let me arrive at our consultation with a real design direction rather than a blank page.</p>
+          <p style="margin:0 0 10px;font-size:16px;line-height:1.75;color:#3A2A1A;">They cover:</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">your home, and how you actually live in it</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">what is not working right now</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">the look and feel you are drawn to</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">budget and timing, so that what I propose is buildable</td></tr>
+          </table>
+
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
+            <tr><td style="background:#C9A96E;border-radius:3px;">
+              <a href="${safeLink}" style="display:inline-block;padding:15px 34px;font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">Open the questionnaire</a>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 22px;font-size:14px;line-height:1.7;color:#6B5344;">It takes about ten minutes and saves itself as you go, so you can stop halfway and come back to it. Anything you leave blank we simply talk through together.</p>
+          <p style="margin:0 0 6px;font-size:16px;line-height:1.7;color:#3A2A1A;">Warmly,</p>
+          <p style="margin:0 0 4px;font-size:16px;color:#2C1A0E;">Kristine</p>
+          <p style="margin:0 0 34px;font-size:13px;color:#6B5344;">Kristine Interiors &middot; Interior Design &middot; Dubai</p>
+        </td></tr>
+
+        <tr><td style="background:#FAF7F2;padding:18px 40px;border-top:1px solid #EDE8DF;">
+          <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.6;color:#A99884;">If the button does not work, open this link:<br />${safeLink}</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+    `;
+
+    const { data, error } = await resend.emails.send({
+      from:     FROM_ADDRESS,
+      to:       email,
+      reply_to: REPLY_TO,
+      subject:  'Your project questionnaire \u00b7 Kristine Interiors',
+      html,
+      text: 'Hi ' + name.split(' ')[0] + ',\n\n'
+          + 'Lovely speaking with you. Before we meet, I would love to hear a little about your '
+          + 'space. These questions let me arrive at our consultation with a real design direction '
+          + 'rather than a blank page.\n\n' + link.href + '\n\n'
+          + 'It takes about ten minutes and saves itself as you go.\n\n'
+          + 'Warmly,\nKristine\nKristine Interiors \u00b7 Dubai',
+    });
+
+    if (error) {
+      console.error('Resend error (links):', error.name, error.message, error.statusCode);
+      return res.status(502).json({ ok: false, error: error.message || 'Resend refused to send it.' });
+    }
+
+    console.log('Questionnaire link sent to', email, 'id:', data && data.id);
+    return res.json({ ok: true });
+
+  } catch (err) {
+    console.error('Unexpected error in /links/send:', err.message || err);
     return res.status(500).json({ ok: false, error: 'Something went wrong, please try again.' });
   }
 });
