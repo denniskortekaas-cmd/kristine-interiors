@@ -512,11 +512,12 @@
             </div>
           </div>
 
-          <div class="field">
-            <label class="q" for="budget">Approximate budget (AED)
-              <span class="hint">An honest range helps more than an exact figure, and we can work it out together once the scope is clear</span>
-            </label>
-            <select id="budget" name="budget">
+          <div class="pair">
+            <div class="field">
+              <label class="q" for="budget">Approximate budget (AED)
+                <span class="hint">An honest range helps more than an exact figure, and we can work it out together once the scope is clear</span>
+              </label>
+              <select id="budget" name="budget">
                 <option value="" disabled selected>Select a range</option>
                 <option>I’d like guidance on setting a budget</option>
                 <option>Under AED 5,000</option>
@@ -527,25 +528,8 @@
                 <option>AED 300,000–500,000</option>
                 <option>AED 500,000–1,000,000</option>
                 <option>AED 1,000,000+</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label class="q">What should this budget cover?
-              <span class="hint">Select all that apply</span>
-            </label>
-            <div class="choices">
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Design fees" /><span>Design fees</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Furniture" /><span>Furniture</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Lighting, rugs and window treatments" /><span>Lighting, rugs and window treatments</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Wall decor" /><span>Wall decor</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Styling accessories and finishing touches" /><span>Styling accessories and finishing touches</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="Renovation work and fitted joinery" /><span>Renovation work and fitted joinery</span></label>
-              <label class="choice"><input type="checkbox" name="budget_scope" value="I'm not sure yet" /><span>I’m not sure yet</span></label>
+              </select>
             </div>
-          </div>
-
-          <div class="pair">
             <div class="field">
               <label class="q" for="start">When would you like to start?</label>
               <select id="start" name="start">
@@ -557,12 +541,13 @@
                 <option>Still exploring</option>
               </select>
             </div>
-            <div class="field">
-              <label class="q" for="deadline">Is there a date it has to be ready by?
-                <span class="hint">A move-in date, guests arriving, a listing going live</span>
-              </label>
-              <input type="text" id="deadline" name="deadline" placeholder="Date, or none" />
-            </div>
+          </div>
+
+          <div class="field">
+            <label class="q" for="deadline">Is there a date it has to be ready by?
+              <span class="hint">A move-in date, guests arriving, a listing going live</span>
+            </label>
+            <input type="text" id="deadline" name="deadline" placeholder="Date, or none" />
           </div>
 
           <div class="field">
