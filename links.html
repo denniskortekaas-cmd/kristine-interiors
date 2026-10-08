@@ -156,7 +156,7 @@
       <input type="text" id="client" placeholder="Anna Petrova" autocomplete="off" autofocus />
 
       <label class="q" for="client-email" style="margin-top:22px">Her e-mail address
-        <span class="hint">Only needed if you want to send the link from here. Leave it empty and you can still copy it.</span>
+        <span class="hint">Used to address the Gmail window. Leave it empty and you can still copy the link.</span>
       </label>
       <input type="email" id="client-email" placeholder="anna@example.com" autocomplete="off" />
 
@@ -174,7 +174,6 @@
         <div class="message-box" id="message"></div>
         <div class="actions">
           <a class="action" id="send-gmail" aria-disabled="true" target="_blank" rel="noopener">Open in Gmail</a>
-          <a class="action" id="send-mailapp" aria-disabled="true">Open in mail app</a>
           <a class="action" id="send-whatsapp" aria-disabled="true" target="_blank" rel="noopener">Send on WhatsApp</a>
           <span class="action" id="copy-message" aria-disabled="true">Copy message</span>
           <a class="action" id="open-link" aria-disabled="true" target="_blank" rel="noopener">Preview it</a>
@@ -217,7 +216,6 @@
     var openBtn   = document.getElementById('open-link');
     var mailInput = document.getElementById('client-email');
     var gmailBtn  = document.getElementById('send-gmail');
-    var mailAppBtn= document.getElementById('send-mailapp');
     var sentNote  = document.getElementById('sent-note');
     var recentEl  = document.getElementById('recent');
     var emptyNote = document.getElementById('recent-empty');
@@ -272,7 +270,7 @@
         message.textContent = '';
         waBtn.removeAttribute('href');
         openBtn.removeAttribute('href');
-        [waBtn, copyMsg, openBtn, gmailBtn, mailAppBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
+        [waBtn, copyMsg, openBtn, gmailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
         current = { name: '', url: '', text: '' };
         return;
       }
@@ -295,7 +293,7 @@
       message.textContent = text;
       waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(text);
       openBtn.href = url;
-      [waBtn, copyMsg, openBtn, gmailBtn, mailAppBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
+      [waBtn, copyMsg, openBtn, gmailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
       current = { name: name, url: url, text: text };
     }
 
@@ -451,19 +449,25 @@
     }
 
     function bericht(naam, url) {
-      var first = naam.split(' ')[0];
+      var first = naam.split(' ')[0].replace(/[<>&]/g, '');
+      var veilig = url.replace(/[<>&"]/g, '');
       return {
         onderwerp: 'Your project questionnaire \u00b7 Kristine Interiors',
+
+        // Plain text, for WhatsApp and as the fallback if the clipboard is refused
         tekst:
           'Hi ' + first + ',\n\n' +
           'Lovely speaking with you. Here are a few questions about your space, so I can come ' +
           'to our consultation with a real design direction rather than a blank page.\n\n' +
           url + '\n\n' +
           'It takes about ten minutes and saves itself as you go, so you can stop halfway and ' +
-          'come back to it.\n\n' +
-          'Kristine'
+          'come back to it. We will go through your answers together.\n\n' +
+          'Kristine\nKristine Interiors \u00b7 Dubai',
+
       };
     }
+
+
 
     function adres() {
       var a = mailInput.value.trim();
@@ -487,19 +491,14 @@
     gmailBtn.addEventListener('click', function (e) {
       var o = opstellen();
       if (!o) { e.preventDefault(); return; }
+      // Compose links carry plain text only, and she works from her phone,
+      // where pasting a laid-out version is no use. So the message goes in
+      // the link itself and the window opens ready to send.
       gmailBtn.href = 'https://mail.google.com/mail/?view=cm&fs=1'
         + '&to=' + encodeURIComponent(o.naar)
         + '&su=' + encodeURIComponent(o.onderwerp)
         + '&body=' + encodeURIComponent(o.tekst);
-      remember(current);
-    });
-
-    mailAppBtn.addEventListener('click', function (e) {
-      var o = opstellen();
-      if (!o) { e.preventDefault(); return; }
-      mailAppBtn.href = 'mailto:' + encodeURIComponent(o.naar)
-        + '?subject=' + encodeURIComponent(o.onderwerp)
-        + '&body=' + encodeURIComponent(o.tekst);
+      melding('Gmail is opening with the message in it.', 'ok');
       remember(current);
     });
 
