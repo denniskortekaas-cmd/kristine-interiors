@@ -173,7 +173,8 @@
         <p class="preview-label" style="margin-top:22px">Message to send</p>
         <div class="message-box" id="message"></div>
         <div class="actions">
-          <span class="action" id="send-email" aria-disabled="true">Send by e-mail</span>
+          <a class="action" id="send-gmail" aria-disabled="true" target="_blank" rel="noopener">Open in Gmail</a>
+          <a class="action" id="send-mailapp" aria-disabled="true">Open in mail app</a>
           <a class="action" id="send-whatsapp" aria-disabled="true" target="_blank" rel="noopener">Send on WhatsApp</a>
           <span class="action" id="copy-message" aria-disabled="true">Copy message</span>
           <a class="action" id="open-link" aria-disabled="true" target="_blank" rel="noopener">Preview it</a>
@@ -215,7 +216,8 @@
     var copyMsg   = document.getElementById('copy-message');
     var openBtn   = document.getElementById('open-link');
     var mailInput = document.getElementById('client-email');
-    var mailBtn   = document.getElementById('send-email');
+    var gmailBtn  = document.getElementById('send-gmail');
+    var mailAppBtn= document.getElementById('send-mailapp');
     var sentNote  = document.getElementById('sent-note');
     var recentEl  = document.getElementById('recent');
     var emptyNote = document.getElementById('recent-empty');
@@ -270,7 +272,7 @@
         message.textContent = '';
         waBtn.removeAttribute('href');
         openBtn.removeAttribute('href');
-        [waBtn, copyMsg, openBtn, mailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
+        [waBtn, copyMsg, openBtn, gmailBtn, mailAppBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'true'); });
         current = { name: '', url: '', text: '' };
         return;
       }
@@ -293,7 +295,7 @@
       message.textContent = text;
       waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(text);
       openBtn.href = url;
-      [waBtn, copyMsg, openBtn, mailBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
+      [waBtn, copyMsg, openBtn, gmailBtn, mailAppBtn].forEach(function (el) { el.setAttribute('aria-disabled', 'false'); });
       current = { name: name, url: url, text: text };
     }
 
@@ -439,46 +441,66 @@
       hideUndo();
     });
 
-    /* Sending runs on the server, which is where the Resend key lives. It only
-       gets the name, the address and the link; the message itself is written
-       there, so nothing typed here can end up in someone's inbox. */
+    /* Nothing is sent from here. The buttons hand the finished message to her
+       own mailbox, so it leaves from her address and the reply comes back to
+       her, not to a robot. */
     function melding(tekst, soort) {
       sentNote.hidden = false;
       sentNote.textContent = tekst;
       sentNote.className = 'sent ' + soort;
     }
 
-    mailBtn.addEventListener('click', function () {
-      if (mailBtn.getAttribute('aria-disabled') === 'true') return;
-      var adres = mailInput.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adres)) {
-        melding('Vul eerst een geldig e-mailadres in.', 'fout');
-        mailInput.focus();
-        return;
-      }
-      mailBtn.setAttribute('aria-disabled', 'true');
-      mailBtn.textContent = 'Sending…';
-      melding('', 'ok');
-      sentNote.hidden = true;
+    function bericht(naam, url) {
+      var first = naam.split(' ')[0];
+      return {
+        onderwerp: 'Your project questionnaire \u00b7 Kristine Interiors',
+        tekst:
+          'Hi ' + first + ',\n\n' +
+          'Lovely speaking with you. Here are a few questions about your space, so I can come ' +
+          'to our consultation with a real design direction rather than a blank page.\n\n' +
+          url + '\n\n' +
+          'It takes about ten minutes and saves itself as you go, so you can stop halfway and ' +
+          'come back to it.\n\n' +
+          'Kristine'
+      };
+    }
 
-      fetch('/links/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: current.name, email: adres, url: current.url })
-      })
-        .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
-        .then(function (res) {
-          if (!res.ok || !res.body.ok) throw new Error(res.body.error || 'Something went wrong.');
-          melding('Sent to ' + adres + '. The reply goes to Kristine.', 'ok');
-          remember(current);
-          mailBtn.textContent = 'Send by e-mail';
-          mailBtn.setAttribute('aria-disabled', 'false');
-        })
-        .catch(function (err) {
-          melding(err.message, 'fout');
-          mailBtn.textContent = 'Send by e-mail';
-          mailBtn.setAttribute('aria-disabled', 'false');
-        });
+    function adres() {
+      var a = mailInput.value.trim();
+      if (!a) return '';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a) ? a : null;   // null betekent: onjuist
+    }
+
+    function opstellen() {
+      if (!current.url) return null;
+      var a = adres();
+      if (a === null) {
+        melding('That e-mail address does not look right.', 'fout');
+        mailInput.focus();
+        return null;
+      }
+      sentNote.hidden = true;
+      var b = bericht(current.name, current.url);
+      return { naar: a, onderwerp: b.onderwerp, tekst: b.tekst };
+    }
+
+    gmailBtn.addEventListener('click', function (e) {
+      var o = opstellen();
+      if (!o) { e.preventDefault(); return; }
+      gmailBtn.href = 'https://mail.google.com/mail/?view=cm&fs=1'
+        + '&to=' + encodeURIComponent(o.naar)
+        + '&su=' + encodeURIComponent(o.onderwerp)
+        + '&body=' + encodeURIComponent(o.tekst);
+      remember(current);
+    });
+
+    mailAppBtn.addEventListener('click', function (e) {
+      var o = opstellen();
+      if (!o) { e.preventDefault(); return; }
+      mailAppBtn.href = 'mailto:' + encodeURIComponent(o.naar)
+        + '?subject=' + encodeURIComponent(o.onderwerp)
+        + '&body=' + encodeURIComponent(o.tekst);
+      remember(current);
     });
 
     input.addEventListener('input', render);
