@@ -413,14 +413,14 @@ app.post('/links/send', linkLimiter, async function (req, res) {
         </td></tr>
 
         <tr><td style="padding:38px 40px 10px;">
-          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#2C1A0E;">Hi ${first},</p>
-          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#3A2A1A;">Lovely speaking with you. Before we meet, I would love to hear a little about your space. These questions let me arrive at our consultation with a real design direction rather than a blank page.</p>
-          <p style="margin:0 0 10px;font-size:16px;line-height:1.75;color:#3A2A1A;">They cover:</p>
+          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#2C1A0E;">Dear ${first},</p>
+          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#3A2A1A;">Thank you for considering Kristine Interiors. Before we speak, it would help me to understand your space and what you would like it to become, so that our conversation starts with a real design direction rather than a blank page.</p>
+          <p style="margin:0 0 10px;font-size:16px;line-height:1.75;color:#3A2A1A;">The questionnaire covers:</p>
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
-            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">your home, and how you actually live in it</td></tr>
-            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">what is not working right now</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">your property, and how you use it day to day</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">what is not working in the space at present</td></tr>
             <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">the look and feel you are drawn to</td></tr>
-            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">budget and timing, so that what I propose is buildable</td></tr>
+            <tr><td style="padding:3px 10px 3px 0;color:#C9A96E;font-size:15px;">&mdash;</td><td style="font-size:15px;line-height:1.7;color:#3A2A1A;">budget and timing, so that any proposal is realistic</td></tr>
           </table>
 
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
@@ -429,8 +429,9 @@ app.post('/links/send', linkLimiter, async function (req, res) {
             </td></tr>
           </table>
 
-          <p style="margin:0 0 22px;font-size:14px;line-height:1.7;color:#6B5344;">It takes about ten minutes and saves itself as you go, so you can stop halfway and come back to it. Anything you leave blank we simply talk through together.</p>
-          <p style="margin:0 0 6px;font-size:16px;line-height:1.7;color:#3A2A1A;">Warmly,</p>
+          <p style="margin:0 0 22px;font-size:14px;line-height:1.7;color:#6B5344;">It takes around ten minutes and saves as you go, so you are welcome to complete it in your own time. Anything you would rather discuss in person can be left blank.</p>
+          <p style="margin:0 0 18px;font-size:16px;line-height:1.75;color:#3A2A1A;">I look forward to hearing about your project.</p>
+          <p style="margin:0 0 6px;font-size:16px;line-height:1.7;color:#3A2A1A;">Kind regards,</p>
           <p style="margin:0 0 4px;font-size:16px;color:#2C1A0E;">Kristine</p>
           <p style="margin:0 0 34px;font-size:13px;color:#6B5344;">Kristine Interiors &middot; Interior Design &middot; Dubai</p>
         </td></tr>
@@ -452,12 +453,13 @@ app.post('/links/send', linkLimiter, async function (req, res) {
       reply_to: REPLY_TO,
       subject:  'Your project questionnaire \u00b7 Kristine Interiors',
       html,
-      text: 'Hi ' + name.split(' ')[0] + ',\n\n'
-          + 'Lovely speaking with you. Before we meet, I would love to hear a little about your '
-          + 'space. These questions let me arrive at our consultation with a real design direction '
-          + 'rather than a blank page.\n\n' + link.href + '\n\n'
-          + 'It takes about ten minutes and saves itself as you go.\n\n'
-          + 'Warmly,\nKristine\nKristine Interiors \u00b7 Dubai',
+      text: 'Dear ' + name.split(' ')[0] + ',\n\n'
+          + 'Thank you for considering Kristine Interiors. Before we speak, it would help me to '
+          + 'understand your space and what you would like it to become, so that our conversation '
+          + 'starts with a real design direction rather than a blank page.\n\n' + link.href + '\n\n'
+          + 'It takes around ten minutes and saves as you go, so you are welcome to complete it in '
+          + 'your own time.\n\nI look forward to hearing about your project.\n\n'
+          + 'Kind regards,\nKristine\nKristine Interiors \u00b7 Interior Design \u00b7 Dubai',
     });
 
     if (error) {
