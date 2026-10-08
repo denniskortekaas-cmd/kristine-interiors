@@ -58,8 +58,9 @@ if (!apiKey) {
 const resend = new Resend(apiKey);
 
 // Her own domain, verified with Resend. Everything the site sends leaves from
-// here; replies go to her Gmail, because this address has no mailbox of its own.
-const FROM_ADDRESS = 'Kristine Interiors <hello@kristineinteriors.com>';
+// here. info@ is deliberate: it forwards to her Gmail, so a client who ignores
+// reply-to and writes straight to the sender still reaches her.
+const FROM_ADDRESS = 'Kristine Interiors <info@kristineinteriors.com>';
 const REPLY_TO = 'kristine.interiors.uae@gmail.com';
 
 // ── HTML escape helper ────────────────────────────────────────────────────────
