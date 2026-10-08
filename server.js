@@ -227,7 +227,7 @@ const INTAKE_SECTIONS = [
   ]],
   ['Practical', [
     ['budget',        'Budget'],
-    ['budget_scope',  'Budget includes'],
+    ['budget_scope',  'Budget should cover'],
     ['start',         'Preferred start'],
     ['deadline',      'Deadline'],
     ['plans',         'Floor plans / photos'],

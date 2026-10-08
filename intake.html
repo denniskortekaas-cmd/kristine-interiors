@@ -346,8 +346,7 @@
               <select id="purpose" name="purpose">
                 <option value="" disabled selected>Select one</option>
                 <option>Our own home</option>
-                <option>Holiday home</option>
-                <option>Short-term rental or investment</option>
+                <option>Short-term rental</option>
                 <option>Long-term rental</option>
                 <option>Not decided yet</option>
               </select>
@@ -503,30 +502,36 @@
             </div>
           </div>
 
-          <div class="pair">
-            <div class="field">
-              <label class="q" for="budget">Approximate budget (AED)
-                <span class="hint">An honest range helps more than an exact figure</span>
-              </label>
-              <select id="budget" name="budget">
+          <div class="field">
+            <label class="q" for="budget">Approximate budget (AED)
+              <span class="hint">An honest range helps more than an exact figure, and we can work it out together once the scope is clear</span>
+            </label>
+            <select id="budget" name="budget">
                 <option value="" disabled selected>Select a range</option>
+                <option>I’d like guidance on setting a budget</option>
                 <option>Under AED 5,000</option>
-                <option>AED 5,000 - 15,000</option>
-                <option>AED 15,000 - 30,000</option>
-                <option>AED 30,000 - 60,000</option>
-                <option>AED 60,000 - 150,000</option>
-                <option>AED 150,000+</option>
-                <option>Not sure yet</option>
-              </select>
-            </div>
-            <div class="field">
-              <label class="q" for="budget_scope">Does that budget include furniture?</label>
-              <select id="budget_scope" name="budget_scope">
-                <option value="" disabled selected>Select one</option>
-                <option>Yes, furniture and everything else</option>
-                <option>Design fee only, furniture comes on top</option>
-                <option>Not sure yet</option>
-              </select>
+                <option>AED 5,000–15,000</option>
+                <option>AED 15,000–50,000</option>
+                <option>AED 50,000–150,000</option>
+                <option>AED 150,000–300,000</option>
+                <option>AED 300,000–500,000</option>
+                <option>AED 500,000–1,000,000</option>
+                <option>AED 1,000,000+</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="q">What should this budget cover?
+              <span class="hint">Select all that apply</span>
+            </label>
+            <div class="choices">
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Design fees" /><span>Design fees</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Furniture" /><span>Furniture</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Lighting, rugs and window treatments" /><span>Lighting, rugs and window treatments</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Wall decor" /><span>Wall decor</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Styling accessories and finishing touches" /><span>Styling accessories and finishing touches</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="Renovation work and fitted joinery" /><span>Renovation work and fitted joinery</span></label>
+              <label class="choice"><input type="checkbox" name="budget_scope" value="I'm not sure yet" /><span>I’m not sure yet</span></label>
             </div>
           </div>
 
